@@ -39,10 +39,6 @@ function outdata = fill_missing_values_multivariate(indata, method)
         [beta,Sigma,E,CovB,logL] = mvregress(current_design_matrix, current_observation_matrix);
 
         %Apply regression to the missing data and return it
-        for i=1:length(current_lines_missing)
-            %yi = xi1 * beta_1 + ... + x1p * beta_p
-            yi = indata(current_lines_missing(i), indexes_without_missing) * beta;
-            outdata(current_lines_missing(i), j) = yi;
-        end
+        outdata(current_lines_missing, j) = indata(current_lines_missing, indexes_without_missing) * beta;
     end
 end
