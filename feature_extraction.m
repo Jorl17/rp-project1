@@ -24,7 +24,8 @@ function [ data ] = feature_extraction(data, method, target_number_of_features, 
         options.arg = kernel_argument;
         options.new_dim = target_number_of_features;
         m = gda(data, options);
-        data = kernelproj( data, m );
-        
+        data = kernelproj( data, m );        
     end
+    data.num_data = size(data.X, 2);
+    data.name = 'Higgs Data';
 end
