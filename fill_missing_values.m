@@ -6,12 +6,10 @@ function [ outdata ] = fill_missing_values( indata, technique,varargin)
     elseif strcmp(technique,'median')
         outdata = fill_missing_values_median(indata);        
     elseif strcmp(technique,'knn')
-        %FIXME: hardcoded values
         [K,distance] = args_with_default_values(varargin,5,'euclidean');
-        %args_with_default_values(varargin,5,'euclidian');
-        %K = arg_with_default_value(varargin,1,5);
-        %distance = arg_with_default_value(varargin,2,'euclidean');
         outdata = fill_missing_values_knn(indata,K,distance);
+    elseif strcmp(technique,'design')
+        outdata = fill_missing_values_design(indata, varargin(1), varargin{2:end});
     else
         error('Unrecognized missing value technique: %s', technique);
     end    
