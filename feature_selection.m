@@ -1,21 +1,12 @@
-function [ data, indexes ] = feature_selection(data, classes, method, target_number_of_features, varargin)
+function [ data, indexes ] = feature_selection(data, method, target_number_of_features, varargin)
     if strcmp(method, 'fisher')
         %Filter Method
-        indexes = fisher(data, classes);
-        indexes = indexes(1:target_number_of_features);
-        data = data(:,indexes);
-        %FIXME: Adapt above to data.X and data.y (different dimensions)
+        data = fisher(data, target_number_of_features);
     elseif strcmp(method, 'fsfisher')
         %Filter Method
-        out = fsFisher(data, classes);
-        indexes = out.fList(1:target_number_of_features);
-        data = data(:,indexes);
-        %FIXME: Adapt above to data.X and data.y (different dimensions)
+        data = fsFisher(data, target_number_of_features);
     elseif strcmp(method, 'fskruskalwallis')
-        out = fsKruskalWallis(data, classes);
-        indexes = out.fList(1:target_number_of_features);
-        data = data(:,indexes);
-        %FIXME: Adapt above to data.X and data.y (different dimensions)
+        data = fsKruskalWallis(data, target_number_of_features);
     elseif strcmp(method, 'corrcoef')
         [corrcoef_type, threshold] = args_with_default_values(varargin, 'exclude_high_correlation', 0.9);
         if strcmp(corrcoef_type, 'exclude_high_correlation')

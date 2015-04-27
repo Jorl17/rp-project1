@@ -1,4 +1,4 @@
-function [ data ] = fsFisher(data)
+function [ data ] = fsFisher(data, target_number_of_features)
 %Fisher Score, use the N var formulation
 %   X, the data, each raw is an instance
 %   Y, the label in 1 2 3 ... format
