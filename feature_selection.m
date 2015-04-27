@@ -10,6 +10,12 @@ function [ data, indexes ] = feature_selection(data, method, target_number_of_fe
     elseif strcmp(method, 'fskruskalwallis')
         data = fsKruskalWallis(data, target_number_of_features);
         %[data, indexes] = fsKruskalWallis(data, target_number_of_features);
+    elseif strcmp(method, 'auc')
+        %FIXME: Area under curve
+    elseif strcmp(method, 'mrmra')
+        %FIXME: mRMRa
+    elseif strcmp(method, 'mrmrm')
+        %FIXME: mRMRm
     elseif strcmp(method, 'corrcoef')
         [corrcoef_type, threshold] = args_with_default_values(varargin, 'exclude_high_correlation', 0.9);
         if strcmp(corrcoef_type, 'exclude_high_correlation')
