@@ -2,11 +2,14 @@ function [ data, indexes ] = feature_selection(data, method, target_number_of_fe
     if strcmp(method, 'fisher')
         %Filter Method
         data = fisher(data, target_number_of_features);
+        %[data, indexes] = fisher(data, target_number_of_features);
     elseif strcmp(method, 'fsfisher')
         %Filter Method
         data = fsFisher(data, target_number_of_features);
+        %[data, indexes] = fsFisher(data, target_number_of_features);
     elseif strcmp(method, 'fskruskalwallis')
         data = fsKruskalWallis(data, target_number_of_features);
+        %[data, indexes] = fsKruskalWallis(data, target_number_of_features);
     elseif strcmp(method, 'corrcoef')
         [corrcoef_type, threshold] = args_with_default_values(varargin, 'exclude_high_correlation', 0.9);
         if strcmp(corrcoef_type, 'exclude_high_correlation')

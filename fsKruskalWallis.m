@@ -1,4 +1,4 @@
-function [ data ] = fsKruskalWallis(data, target_number_of_features)
+function [ data, indexes ] = fsKruskalWallis(data, target_number_of_features)
 % Taken from http://featureselection.asu.edu/software.php
 
     X = data.X;
@@ -13,7 +13,7 @@ function [ data ] = fsKruskalWallis(data, target_number_of_features)
     [~, out.fList] = sort(out.W, 'descend');
     out.prf = 1;
     
-    out.fList = out.fList(1:target_number_of_features);
-    data.X = data.X(:,out.fList);
-    data.y = data.y(:,out.fList);
+    indexes = out.fList(1:target_number_of_features);
+    data.X = data.X(:,indexes);
+    data.y = data.y(:,indexes);
 end

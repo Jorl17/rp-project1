@@ -1,4 +1,4 @@
-function [ data ] = fisher(higgs_data, target_number_of_features)
+function [ data, indexes ] = fisher(higgs_data, target_number_of_features)
 %FIHSER Implementation of the Fisher Filter method for feature selection
 %   data is the higgins data (features of all the entries in the dataset)
 %   classes is a list with the class of each entry in the datset

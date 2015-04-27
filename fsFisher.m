@@ -1,4 +1,4 @@
-function [ data ] = fsFisher(data, target_number_of_features)
+function [ data, indexes ] = fsFisher(data, target_number_of_features)
 %Fisher Score, use the N var formulation
 %   X, the data, each raw is an instance
 %   Y, the label in 1 2 3 ... format
@@ -49,7 +49,7 @@ function [ data ] = fsFisher(data, target_number_of_features)
     [~, out.fList] = sort(out.W, 'descend');
     out.prf = 1;
 
-    out.fList = out.fList(1:target_number_of_features);
-    data.X = data.X(:,out.fList);
-    data.y = data.y(:,out.fList);
+    indexes = out.fList(1:target_number_of_features);
+    data.X = data.X(:,indexes);
+    data.y = data.y(:,indexes);
 end
