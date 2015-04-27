@@ -22,11 +22,11 @@ function [ data, indexes ] = fisher(higgs_data, target_number_of_features)
            j = classes_unique(k);
            indexes_current_class = find(data(:,end)==j);
            if (k == 1)
-               mean_feature_classes = mean(data(indexes_current_class,i));
+               mean_feature_classes = mean(data(indexes_current_class,k));
            else
-               mean_feature_classes = mean_feature_classes - mean(data(indexes_current_class,i));
+               mean_feature_classes = mean_feature_classes - mean(data(indexes_current_class,k));
            end
-           std_squared_feature_classes = std_squared_feature_classes + (std(data(indexes_current_class,i))^2) ;
+           std_squared_feature_classes = std_squared_feature_classes + (std(data(indexes_current_class,k))^2) ;
         end
         
         %Compute the fisher score
