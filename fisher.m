@@ -1,9 +1,11 @@
-function [ data ] = fisher(data, classes, target_number_of_features)
+function [ data ] = fisher(higgs_data, target_number_of_features)
 %FIHSER Implementation of the Fisher Filter method for feature selection
 %   data is the higgins data (features of all the entries in the dataset)
 %   classes is a list with the class of each entry in the datset
 %   target_number_of_features is the desired number of features to select
      
+    data = higgs_data.X;
+    classes = higgs_data.y;
     number_features = size(data, 2)-1;
     scores = zeros(1,number_features);
     classes_unique = unique(classes);
@@ -35,7 +37,7 @@ function [ data ] = fisher(data, classes, target_number_of_features)
     [~, indexes] = sort(scores, 'descend');
     
      indexes = indexes(1:target_number_of_features);
-     data.X = data.X(:,indexes);
-     data.y = data.y(:,indexes);
+     higgs_data.X = higgs_data.X(:,indexes);
+     higgs_data.y = higgs_data.y(:,indexes);
 end
 
