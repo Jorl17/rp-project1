@@ -1,17 +1,14 @@
 function [ data, indexes ] = feature_selection(data, method, target_number_of_features, varargin)
     if strcmp(method, 'fisher')
         %Filter Method
-        data = fisher(data, target_number_of_features);
-        %[data, indexes] = fisher(data, target_number_of_features);
+        [data, indexes] = fisher(data, target_number_of_features);
     elseif strcmp(method, 'fsfisher')
         %Filter Method
-        data = fsFisher(data, target_number_of_features);
-        %[data, indexes] = fsFisher(data, target_number_of_features);
+        [data, indexes] = fsFisher(data, target_number_of_features);
     elseif strcmp(method, 'fskruskalwallis')
-        data = fsKruskalWallis(data, target_number_of_features);
-        %[data, indexes] = fsKruskalWallis(data, target_number_of_features);
+        [data, indexes] = fsKruskalWallis(data, target_number_of_features);
     elseif strcmp(method, 'auc')
-        %FIXME: Area under curve
+        [data, indexes] = area_under_curve(data, target_number_of_features);
     elseif strcmp(method, 'mrmra')
         %FIXME: mRMRa
     elseif strcmp(method, 'mrmrm')

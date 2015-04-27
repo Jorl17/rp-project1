@@ -1,12 +1,11 @@
-function [ data, indexes ] = fisher(higgs_data, target_number_of_features)
+function [ data, indexes ] = fisher(data, target_number_of_features)
 %FIHSER Implementation of the Fisher Filter method for feature selection
 %   data is the higgins data (features of all the entries in the dataset)
-%   classes is a list with the class of each entry in the datset
 %   target_number_of_features is the desired number of features to select
      
-    data = higgs_data.X';
-    classes = higgs_data.y;
-    number_features = size(data, 2);
+    X = data.X';
+    classes = data.y;
+    number_features = size(X, 2);
     scores = zeros(1,number_features);
     classes_unique = unique(classes);
     
@@ -22,11 +21,11 @@ function [ data, indexes ] = fisher(higgs_data, target_number_of_features)
            j = classes_unique(k);
            indexes_current_class = find(classes(:,end)==j);
            if (k == 1)
-               mean_feature_classes = mean(data(indexes_current_class,i));
+               mean_feature_classes = mean(X(indexes_current_class,i));
            else
-               mean_feature_classes = mean_feature_classes - mean(data(indexes_current_class,i));
+               mean_feature_classes = mean_feature_classes - mean(X(indexes_current_class,i));
            end
-           std_squared_feature_classes = std_squared_feature_classes + (std(data(indexes_current_class,i))^2) ;
+           std_squared_feature_classes = std_squared_feature_classes + (std(X(indexes_current_class,i))^2) ;
         end
         %Compute the fisher score
         scores(i) = (mean_feature_classes^2) / std_squared_feature_classes;
@@ -37,6 +36,6 @@ function [ data, indexes ] = fisher(higgs_data, target_number_of_features)
     [~, indexes] = sort(scores, 'descend');
     
      indexes = indexes(1:target_number_of_features);
-     higgs_data.X = higgs_data.X(:,indexes);
+     data.X = X(:,indexes)';
 end
 
