@@ -1,11 +1,9 @@
-function [ original_indexes ] = fisher(data, classes)
+function [ data ] = fisher(data, classes, target_number_of_features)
 %FIHSER Implementation of the Fisher Filter method for feature selection
 %   data is the higgins data (features of all the entries in the dataset)
 %   classes is a list with the class of each entry in the datset
 %   target_number_of_features is the desired number of features to select
      
-    %FIXME: SINCE DATA(:,32) HAS THE LABEL WE ARE NOT INCLUDING IT HERE,
-    %RIGHT???? CONFIRM IT!!!!
     number_features = size(data, 2)-1;
     scores = zeros(1,number_features);
     classes_unique = unique(classes);
@@ -34,6 +32,10 @@ function [ original_indexes ] = fisher(data, classes)
     end
     %Sort the scores in descending order (good features first) and return
     %their original indexes
-    [~, original_indexes] = sort(scores, 'descend');
+    [~, indexes] = sort(scores, 'descend');
+    
+     indexes = indexes(1:target_number_of_features);
+     data.X = data.X(:,indexes);
+     data.y = data.y(:,indexes);
 end
 
