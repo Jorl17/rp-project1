@@ -6,11 +6,10 @@ function [ data, indexes ] = fsFisher(data, target_number_of_features)
 %   Follows the algorithm described in
 %   http://arxiv.org/ftp/arxiv/papers/1202/1202.3725.pdf (different from the one in the slides??)
 
-    X = data.X;
+    X = data.X';
     Y = data.y;
     numC = max(Y);
     [~, numF] = size(X);
-    numF = numF - 1;
     out.W = zeros(1,numF);
 
     % statistic for classes
@@ -51,5 +50,4 @@ function [ data, indexes ] = fsFisher(data, target_number_of_features)
 
     indexes = out.fList(1:target_number_of_features);
     data.X = data.X(:,indexes);
-    data.y = data.y(:,indexes);
 end

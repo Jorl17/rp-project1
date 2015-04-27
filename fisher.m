@@ -4,9 +4,9 @@ function [ data, indexes ] = fisher(higgs_data, target_number_of_features)
 %   classes is a list with the class of each entry in the datset
 %   target_number_of_features is the desired number of features to select
      
-    data = higgs_data.X;
+    data = higgs_data.X';
     classes = higgs_data.y;
-    number_features = size(data, 2)-1;
+    number_features = size(data, 2);
     scores = zeros(1,number_features);
     classes_unique = unique(classes);
     
@@ -17,27 +17,26 @@ function [ data, indexes ] = fisher(higgs_data, target_number_of_features)
         mean_feature_classes = 0;
         std_squared_feature_classes = 0;
        
-        %Compute the mean and std for each class
+        %Compute the mean and std for each class, for this feature
         for k=length(classes_unique)
            j = classes_unique(k);
-           indexes_current_class = find(data(:,end)==j);
+           indexes_current_class = find(classes(:,end)==j);
            if (k == 1)
-               mean_feature_classes = mean(data(indexes_current_class,k));
+               mean_feature_classes = mean(data(indexes_current_class,i));
            else
-               mean_feature_classes = mean_feature_classes - mean(data(indexes_current_class,k));
+               mean_feature_classes = mean_feature_classes - mean(data(indexes_current_class,i));
            end
-           std_squared_feature_classes = std_squared_feature_classes + (std(data(indexes_current_class,k))^2) ;
+           std_squared_feature_classes = std_squared_feature_classes + (std(data(indexes_current_class,i))^2) ;
         end
-        
         %Compute the fisher score
         scores(i) = (mean_feature_classes^2) / std_squared_feature_classes;
     end
+    
     %Sort the scores in descending order (good features first) and return
     %their original indexes
     [~, indexes] = sort(scores, 'descend');
     
      indexes = indexes(1:target_number_of_features);
      higgs_data.X = higgs_data.X(:,indexes);
-     higgs_data.y = higgs_data.y(:,indexes);
 end
 
