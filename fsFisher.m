@@ -2,7 +2,7 @@ function [ data, indexes ] = fsFisher(data, target_number_of_features)
 %Fisher Score for Feature Selection, using the N var formulation
 %   Taken and adapted from http://featureselection.asu.edu/software.php
 %   data is a stprtool data type, containing the features/observed data and
-%        the respective classes, in the format (data.X, data.y).
+%        the respective classes, in the format (data.X, data.y)
 %   target_number_of_features is the desired number of features to select
 
     X = data.X';

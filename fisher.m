@@ -1,6 +1,7 @@
 function [ data, indexes ] = fisher(data, target_number_of_features)
 %FIHSER Implementation of the Fisher Filter method for feature selection
-%   data is the higgins data (features of all the entries in the dataset)
+%   data is a stprtool data type, containing the features/observed data and
+%        the respective classes, in the format (data.X, data.y)
 %   target_number_of_features is the desired number of features to select
      
     X = data.X';
