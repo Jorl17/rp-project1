@@ -14,18 +14,17 @@ function [ data ] = feature_extraction(data, method, target_number_of_features, 
         options.new_dim = target_number_of_features;
         %m = greedykpca(data.X, options);        
         m = kpca(data.X, options);        
-        data.X = kpcarec( X, m );
-        %FIXME: the above sounds odd
+        %data.X = kpcarec( X, m );
+        data = kernelproj(data, m);
     elseif strcmp(method, 'gda')
         %Note: GDA just blows up my memory.
         %see help kernel for more kernel types (default was linear)
         [kernel_type, kernel_argument] = args_with_default_values(varargin, 'rbf', 1);
         options.ker = kernel_type;
-        disp(options.ker)
         options.arg = kernel_argument;
         options.new_dim = target_number_of_features;
         m = gda(data, options);
-        data = kernelproj( data, model );
+        data = kernelproj( data, m );
         
     end
 end
