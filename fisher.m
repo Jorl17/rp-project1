@@ -16,15 +16,6 @@ function [ data, indexes ] = fisher(data, target_number_of_features)
         % Rank each feature according to a given metric -- Fisher Score
         mean_feature_classes = 0;
         std_squared_feature_classes = 0;
-        
-        
-        positive_class_indexes = find(classes==1);
-        negative_class_indexes = find(classes==2);
-        
-        mean_positive = mean(X(positive_class_indexes, i));
-        mean_negative = mean(X(negative_class_indexes, i));
-        
-        scores(i) = ((mean_positive - mean_negative)^2) / ( std(X(positive_class_indexes, i))^2 +  std(X(negative_class_indexes, i))^2 );
        
         %Compute the mean and std for each class, for this feature
         for k=1:length(classes_unique)
@@ -35,13 +26,11 @@ function [ data, indexes ] = fisher(data, target_number_of_features)
            else
                mean_feature_classes = mean_feature_classes - mean(X(indexes_current_class, i));
            end
-           
-           pause;
-           std_squared_feature_classes = std_squared_feature_classes + (std(X(indexes_current_class,i))^2) ;
+           std_squared_feature_classes = std_squared_feature_classes + (std(X(indexes_current_class,i))^2);
         end
         
         %Compute the fisher score
-        % scores(i) = (mean_feature_classes^2) / std_squared_feature_classes;
+        scores(i) = (mean_feature_classes^2) / std_squared_feature_classes;
     end
     
     %Sort the scores in descending order (good features first) and return
