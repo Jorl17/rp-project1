@@ -61,7 +61,7 @@ function [ data, indexes ] = mrmr_multiplicative( data, target_number_of_feature
     for i=1:nd, 
        t(i) = mutualinfo(d(:,i), f);
     end; 
-    fprintf('calculate the marginal dmi costs %5.1fs.\n', cputime-t1);
+    %fprintf('calculate the marginal dmi costs %5.1fs.\n', cputime-t1);
 
     [tmp, idxs] = sort(-t);
     fea_base = idxs(1:K);
@@ -73,10 +73,10 @@ function [ data, indexes ] = mrmr_multiplicative( data, target_number_of_feature
     idxleft = idxs(2:KMAX);
 
     k=1;
-    if bdisp==1,
-    fprintf('k=1 cost_time=(N/A) cur_fea=%d #left_cand=%d\n', ...
-          fea(k), length(idxleft));
-    end;
+%     if bdisp==1,
+%     fprintf('k=1 cost_time=(N/A) cur_fea=%d #left_cand=%d\n', ...
+%           fea(k), length(idxleft));
+%     end;
 
     for k=2:K,
        t1=cputime;
@@ -93,10 +93,10 @@ function [ data, indexes ] = mrmr_multiplicative( data, target_number_of_feature
 
        tmpidx = fea(k); fea(k) = idxleft(tmpidx); idxleft(tmpidx) = [];
 
-       if bdisp==1,
-       fprintf('k=%d cost_time=%5.4f cur_fea=%d #left_cand=%d\n', ...
-          k, cputime-t1, fea(k), length(idxleft));
-       end;
+%        if bdisp==1,
+%        fprintf('k=%d cost_time=%5.4f cur_fea=%d #left_cand=%d\n', ...
+%           k, cputime-t1, fea(k), length(idxleft));
+%        end;
     end;
     
     indexes = fea;
