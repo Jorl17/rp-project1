@@ -17,6 +17,12 @@ function [ data, indexes ] = feature_selection(data, method, target_number_of_fe
     elseif strcmp(method, 'mrmrm')
         %Maximize Relevance Minimize Redundancy Multiplicative (Filter)
         [data, indexes] = mrmr_multiplicative(data, target_number_of_features);
+    elseif strcmp(method, 'sequentialFsForward')
+        %Wrapper Selection - Forward
+        [data, indexes] = sequentialFs(data, target_number_of_features, 1);
+    elseif strcmp(method, 'sequentialFsBackward')
+        %Wrapper Selection - Backward
+        [data, indexes] = sequentialFs(data, target_number_of_features, 0);
     elseif strcmp(method, 'corrcoef')
         [corrcoef_type, threshold] = args_with_default_values(varargin, 'exclude_high_correlation', 0.9);
         if strcmp(corrcoef_type, 'exclude_high_correlation')
