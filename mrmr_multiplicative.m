@@ -1,4 +1,4 @@
-function [ fea ] = mrmr_multiplicative( data, target_number_of_features )
+function [ data, indexes ] = mrmr_multiplicative( data, target_number_of_features )
 %mRMR MULTIPLICATIVE The MIQ scheme of minimum redundancy maximal relevance (mRMR) feature selection
 %Taken and adapted from http://www.mathworks.com/matlabcentral/fileexchange/14608-mrmr-feature-selection--using-mutual-information-computation-
 %
@@ -98,6 +98,9 @@ function [ fea ] = mrmr_multiplicative( data, target_number_of_features )
           k, cputime-t1, fea(k), length(idxleft));
        end;
     end;
+    
+    indexes = fea;
+    data.X = data.X(indexes,:);
 
     return;
 
