@@ -1,21 +1,21 @@
 function [ data, indexes ] = feature_selection(data, method, target_number_of_features, varargin)
     if strcmp(method, 'fisher')
-        %Filter Method
+        %Fisher Method (Filter)
         [data, indexes] = fisher(data, target_number_of_features);
     elseif strcmp(method, 'fsfisher')
-        %Filter Method
+        %Fisher Method (Filter)
         [data, indexes] = fsFisher(data, target_number_of_features);
     elseif strcmp(method, 'fskruskalwallis')
-        %Kruskal Wallis
+        %Kruskal Wallis (Filter)
         [data, indexes] = fsKruskalWallis(data, target_number_of_features);
     elseif strcmp(method, 'auc')
-        %Area Under Curve
+        %Area Under Curve (Filter)
         [data, indexes] = area_under_curve(data, target_number_of_features);
     elseif strcmp(method, 'mrmra')
-        %FIXME: mRMRa
+        %Maximize Relevance Minimize Redundancy Aditive (Filter)
         [data, indexes] = mrmr_aditive(data, target_number_of_features);
     elseif strcmp(method, 'mrmrm')
-        %FIXME: mRMRm
+        %Maximize Relevance Minimize Redundancy Multiplicative (Filter)
         [data, indexes] = mrmr_multiplicative(data, target_number_of_features);
     elseif strcmp(method, 'corrcoef')
         [corrcoef_type, threshold] = args_with_default_values(varargin, 'exclude_high_correlation', 0.9);

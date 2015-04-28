@@ -7,5 +7,5 @@ sprt_data = convert_to_sprt_data(higgs_data);
 [data_fs_fisher, indexes_fs_fisher] = feature_selection(sprt_data, 'fsfisher', target_number_of_features);
 [data_auc, indexes_auc] = feature_selection(sprt_data, 'auc', target_number_of_features);
 [data_mrmra, indexes_mrmra] = feature_selection(sprt_data, 'mrmra', target_number_of_features);
-%}
 [data_mrmrm, indexes_mrmrm] = feature_selection(sprt_data, 'mrmrm', target_number_of_features);
+%}
