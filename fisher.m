@@ -1,12 +1,12 @@
-function [ data, indexes ] = fisher(higgs_data, target_number_of_features)
+function [ data, indexes ] = fisher(data, target_number_of_features)
 %FIHSER Implementation of the Fisher Filter method for feature selection
-%   data is the higgins data (features of all the entries in the dataset)
-%   classes is a list with the class of each entry in the datset
+%   data is a stprtool data type, containing the features/observed data and
+%        the respective classes, in the format (data.X, data.y)
 %   target_number_of_features is the desired number of features to select
      
-    data = higgs_data.X;
-    classes = higgs_data.y;
-    number_features = size(data, 2)-1;
+    X = data.X';
+    classes = data.y;
+    number_features = size(X, 2);
     scores = zeros(1,number_features);
     classes_unique = unique(classes);
     
@@ -17,27 +17,27 @@ function [ data, indexes ] = fisher(higgs_data, target_number_of_features)
         mean_feature_classes = 0;
         std_squared_feature_classes = 0;
        
-        %Compute the mean and std for each class
-        for k=length(classes_unique)
+        %Compute the mean and std for each class, for this feature
+        for k=1:length(classes_unique)
            j = classes_unique(k);
-           indexes_current_class = find(data(:,end)==j);
-           if (k == 1)
-               mean_feature_classes = mean(data(indexes_current_class,k));
+           indexes_current_class = find(classes==j);
+           if (k == 1)%First class
+               mean_feature_classes = mean(X(indexes_current_class,i));
            else
-               mean_feature_classes = mean_feature_classes - mean(data(indexes_current_class,k));
+               mean_feature_classes = mean_feature_classes - mean(X(indexes_current_class, i));
            end
-           std_squared_feature_classes = std_squared_feature_classes + (std(data(indexes_current_class,k))^2) ;
+           std_squared_feature_classes = std_squared_feature_classes + (std(X(indexes_current_class,i))^2);
         end
         
         %Compute the fisher score
         scores(i) = (mean_feature_classes^2) / std_squared_feature_classes;
     end
+    
     %Sort the scores in descending order (good features first) and return
     %their original indexes
     [~, indexes] = sort(scores, 'descend');
     
      indexes = indexes(1:target_number_of_features);
-     higgs_data.X = higgs_data.X(:,indexes);
-     higgs_data.y = higgs_data.y(:,indexes);
+     data.X = X(:,indexes)';
 end
 

@@ -1,4 +1,12 @@
 function outdata = fill_missing_values_design(indata, method,varargin)
+% FILL_MISSING_VALUES_DESIGN Replaces missing values with estimations
+% computed using either a multivariate regression or a neural network.
+%   indata is a matrix MxN, with M the number of events and N the number of
+%          features of each event, containing missing or invalid values
+%          (represented by the value -999.0)
+%   method is the desired method to used when computing the estimations for
+%          the missing values
+
     %FIXME: We can have this or interpolation or any other thing
     if ~exist('method', 'var')
         method = 'mvregress';%FIXME: CHANGE THIS

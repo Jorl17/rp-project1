@@ -1,17 +1,15 @@
 function [ data, indexes ] = fsFisher(data, target_number_of_features)
-%Fisher Score, use the N var formulation
-%   X, the data, each raw is an instance
-%   Y, the label in 1 2 3 ... format
+%Fisher Score for Feature Selection, using the N var formulation
 %   Taken and adapted from http://featureselection.asu.edu/software.php
-%   Follows the algorithm described in
-%   http://arxiv.org/ftp/arxiv/papers/1202/1202.3725.pdf (different from the one in the slides??)
+%   data is a stprtool data type, containing the features/observed data and
+%        the respective classes, in the format (data.X, data.y)
+%   target_number_of_features is the desired number of features to select
 
-    X = data.X;
+    X = data.X';
     Y = data.y;
     numC = max(Y);
     [~, numF] = size(X);
-    numF = numF - 1;
-    out.W = zeros(1,numF);
+    W = zeros(1,numF);
 
     % statistic for classes
     cIDX = cell(numC,1);
@@ -36,20 +34,18 @@ function [ data, indexes ] = fsFisher(data, target_number_of_features)
         end
 
         if temp1 == 0
-            out.W(i) = 0;
+            W(i) = 0;
         else
             if temp2 == 0
-                out.W(i) = 100;
+                W(i) = 100;
             else
-                out.W(i) = temp1/temp2;
+                W(i) = temp1/temp2;
             end
         end
     end
 
-    [~, out.fList] = sort(out.W, 'descend');
-    out.prf = 1;
+    [~, fList] = sort(W, 'descend');
 
-    indexes = out.fList(1:target_number_of_features);
-    data.X = data.X(:,indexes);
-    data.y = data.y(:,indexes);
+    indexes = fList(1:target_number_of_features);
+    data.X = X(:,indexes)';
 end
