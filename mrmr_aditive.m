@@ -1,5 +1,5 @@
 function [ data, indexes ] = mrmr_aditive( data, target_number_of_features )
-%mRMR ADITIVE The MIQ scheme of minimum redundancy maximal relevance (mRMR) feature selection
+%mRMR ADITIVE The MID scheme of minimum redundancy maximal relevance (mRMR) feature selection
 %Taken and adapted from http://www.mathworks.com/matlabcentral/fileexchange/14608-mrmr-feature-selection--using-mutual-information-computation-
 %
 % Parameters:
@@ -22,7 +22,7 @@ function [ data, indexes ] = mrmr_aditive( data, target_number_of_features )
 %       Also There are multiple newer versions on the Hanchuan Peng's web site 
 %       (http://research.janelia.org/peng/proj/mRMR/index.htm).
 %
-% More information can be found in the following papers. 
+% More information can be found in the following papers.
 %
 % H. Peng, F. Long, and C. Ding, 
 %   "Feature selection based on mutual information: criteria 
@@ -32,17 +32,16 @@ function [ data, indexes ] = mrmr_aditive( data, target_number_of_features )
 %
 % C. Ding, and H. Peng, 
 %   "Minimum redundancy feature selection from microarray gene 
-%    expression data,"  
+%    expression data," 
 %    Journal of Bioinformatics and Computational Biology,
 %   Vol. 3, No. 2, pp.185-205, 2005. 
 %
 % C. Ding, and H. Peng, 
 %   "Minimum redundancy feature selection from microarray gene 
-%    expression data,"  
+%    expression data," 
 %   Proc. 2nd IEEE Computational Systems Bioinformatics Conference (CSB 2003),
 %   pp.523-528, Stanford, CA, Aug, 2003.
 %  
-%
 %
 % By Hanchuan Peng (hanchuan.peng@gmail.com)
 % April 16, 2003
@@ -61,14 +60,14 @@ function [ data, indexes ] = mrmr_aditive( data, target_number_of_features )
     for i=1:nd, 
        t(i) = mutualinfo(d(:,i), f);
     end; 
-    %fprintf('calculate the marginal dmi costs %5.1fs.\n', cputime-t1);
+    fprintf('calculate the marginal dmi costs %5.1fs.\n', cputime-t1);
 
     [tmp, idxs] = sort(-t);
     fea_base = idxs(1:K);
 
     fea(1) = idxs(1);
 
-    KMAX = min(1000,nd); %500 %20000
+    KMAX = min(1000,nd); %500
 
     idxleft = idxs(2:KMAX);
 
@@ -88,8 +87,7 @@ function [ data, indexes ] = mrmr_aditive( data, target_number_of_features )
           c_mi(i) = mean(mi_array(idxleft(i), :)); 
        end;
 
-    %   [tmp, fea(k)] = max(t_mi(1:ncand) ./ c_mi(1:ncand));
-       [tmp, fea(k)] = max(t_mi(1:ncand) ./ (c_mi(1:ncand) + 0.01));
+       [tmp, fea(k)] = max(t_mi(1:ncand) - c_mi(1:ncand));
 
        tmpidx = fea(k); fea(k) = idxleft(tmpidx); idxleft(tmpidx) = [];
 
@@ -110,6 +108,6 @@ end
 function c = getmultimi(da, dt) 
     for i=1:size(da,2), 
        c(i) = mutualinfo(da(:,i), dt);
-    end;
+    end; 
 end
     
