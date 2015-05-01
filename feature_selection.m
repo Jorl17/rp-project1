@@ -18,7 +18,7 @@ function [ data, indexes ] = feature_selection(data, method, target_number_of_fe
             c = corrcoef(data.X');
             idx = find( abs(c) > threshold  & c ~= 1.0 );
             [~,idx]=ind2sub(size(c),idx);
-            indexes = setdiff(1:data.dim, [1 2 6 4 2 11]);
+            indexes = setdiff(1:data.dim, idx);
             
             %Remember that data.X is transposed!
             data.X(idx,:)=[];                       
