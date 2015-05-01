@@ -11,7 +11,7 @@ function [ data, indexes ] = fsKruskalWallis(data, target_number_of_features)
     W = zeros(n,1);
 
     for i=1:n
-        W(i) = kruskalwallis(vertcat(X(:,i)', Y'),{},'off');
+        W(i) = -kruskalwallis(vertcat(X(:,i)', Y'),{},'off');
     end
 
     [~, fList] = sort(W, 'descend');
