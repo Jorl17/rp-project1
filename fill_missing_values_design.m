@@ -32,14 +32,7 @@ function outdata = fill_missing_values_design(indata, method,varargin)
             [beta,~,~,~,~] = mvregress(current_design_matrix, current_observation_matrix);
             outdata(current_lines_missing, j) = indata(current_lines_missing, indexes_without_missing) * beta;
         elseif strcmp(method,'neuralnetwork')
-          %  goal = 1E-5;
-          %  radius = 1.0;
-          %  net = newrb(current_design_matrix', current_observation_matrix', goal, radius);
-            %outdata(current_lines_missing, j) = sim(net, indata(current_lines_missing, indexes_without_missing)')';
-        %elseif strcmp(method,'feedforwardnet')
             outdata(current_lines_missing, j) = fill_missing_values_neuralnetwork(current_design_matrix, current_observation_matrix, indata(current_lines_missing, indexes_without_missing), varargin{:});
-            %Define some of the network's specifications
-           
         end    
     end
 end
