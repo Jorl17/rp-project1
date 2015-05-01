@@ -2,9 +2,9 @@ function [ data, indexes ] = feature_selection(data, method, target_number_of_fe
     if strcmp(method, 'fisher')
         %Fisher Method (Filter)
         [data, indexes] = fisher(data, target_number_of_features);
-    elseif strcmp(method, 'fsfisher')
+    %elseif strcmp(method, 'fsfisher')
         %Fisher Method (Filter)
-        [data, indexes] = fsFisher(data, target_number_of_features);
+    %    [data, indexes] = fsFisher(data, target_number_of_features);
     elseif strcmp(method, 'fskruskalwallis')
         %Kruskal Wallis (Filter)
         [data, indexes] = fsKruskalWallis(data, target_number_of_features);
