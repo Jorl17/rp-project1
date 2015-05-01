@@ -1,4 +1,11 @@
 function [ data, indexes ] = sequentialFs(data, target_number_of_features, forward, varargin)
+%SEQUENTIALFS Implementation of a Sequential Feature Selection approach for
+%             feature selection
+%   data is a stprtool data type, containing the features/observed data and
+%        the respective classes, in the format (data.X, data.y)
+%   target_number_of_features is the desired number of features to select
+%   forward is a parameter indicating the use of forward selection or
+%           backward selection
 
     if (forward)
         direction = 'forward';
