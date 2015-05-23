@@ -13,9 +13,9 @@ function [ data, indexes ] = sequentialFs(data, target_number_of_features, forwa
         direction = 'backward';
     end
 
-    if (iscell(varargin))
-        %FIXME: Check for length
-        function_name = varargin(1);
+    if (iscell(varargin) && length(varargin)==1)
+        %Convert to string because varargin is a cell array
+        function_name = char(varargin(1));
     else
         function_name = 'my_fitlm';
     end
@@ -29,6 +29,7 @@ function [ data, indexes ] = sequentialFs(data, target_number_of_features, forwa
 end
 
 function dev = critfun(X,Y)
+%FIXME: NOT WORKING WITH OUR DATA
     [~,dev] = glmfit(X,Y,'binomial');
 end
 
