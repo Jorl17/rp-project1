@@ -23,4 +23,4 @@ sprt_data = convert_to_sprt_data(higgs_data);
 %Using LIBSVM implementation in MATLAB
 svm_model2 = train_libsvm(sprt_data.X(:,1:10000)', sprt_data.y(1:10000));%This still runs in feasible time
 fprintf('Going to classify\n');
-result = classify_libsvm(svm_model2, sprt_data.X');
+result = classify_libsvm(svm_model2, sprt_data.X', double(sprt_data.y));
