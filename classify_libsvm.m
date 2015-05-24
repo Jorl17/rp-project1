@@ -1,4 +1,4 @@
-function [ result ] = classify_libsvm( svm_model, data, varargin )
+function [ predicted_label, accuracy, decision_values ] = classify_libsvm( svm_model, data, varargin )
     
     if (iscell(varargin) && ~isempty(varargin))
         testing_label_vector = double(cell2mat(varargin(1)));
@@ -7,6 +7,7 @@ function [ result ] = classify_libsvm( svm_model, data, varargin )
     end
     %testing_label_vector is going to be used to compute the accuracy of
     %the prediction
-    result = libsvmpredict(testing_label_vector, data, svm_model);
+    [predicted_label, accuracy, decision_values] = libsvmpredict(testing_label_vector, data, svm_model);
+    accuracy = accuracy(1);
 end
 
