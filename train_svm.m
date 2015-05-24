@@ -1,4 +1,4 @@
-function [ SVMStruct ] = train_svm( x_data, y_data, varargin )
+function [ SVMStruct ] = train_svm( x_data, y_data )
 %TRAIN_SVM Trains a MATLAB implemented SVM Classifier with a given set of
 %taining data and labels
 %   Receives the training data in the arrays "x_data" and "y_data" and

@@ -17,10 +17,11 @@ sprt_data = convert_to_sprt_data(higgs_data);
 %}
 
 %Training and classifying with MATLAB's SVM Implementation
-% svm_model = train_svm(sprt_data.X(:,1:10)', sprt_data.y(1:10), 300);
-% result = classify_svm(svm_model, sprt_data.X');
+svm_model = train_svm(sprt_data.X(:,1:100)', sprt_data.y(1:100));
+fprintf('Going to classify\n');
+[labels, accuracy, posterior_probabilities] = classify_svm(svm_model, sprt_data.X', sprt_data.y);
 
 %Using LIBSVM implementation in MATLAB
-svm_model2 = train_libsvm(sprt_data.X(:,1:10000)', sprt_data.y(1:10000));%This still runs in feasible time
-fprintf('Going to classify\n');
-[predicted_label, accuracy, decision_values] = classify_libsvm(svm_model2, sprt_data.X', double(sprt_data.y));
+%svm_model2 = train_libsvm(sprt_data.X(:,1:10000)', sprt_data.y(1:10000));%This still runs in feasible time
+%fprintf('Going to classify\n');
+%[predicted_label, accuracy, decision_values] = classify_libsvm(svm_model2, sprt_data.X', double(sprt_data.y));

@@ -12,7 +12,6 @@ function [ predicted_label, accuracy, decision_values ] = classify_libsvm( svm_m
 %   second and third return values of this function.
 %   This method returns the classification for each instance, the
 %   classification accuracy and the classification decision values.
-
     if (iscell(varargin) && ~isempty(varargin))
         testing_label_vector = double(cell2mat(varargin(1)));
     else
