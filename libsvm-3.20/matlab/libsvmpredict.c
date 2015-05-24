@@ -225,9 +225,10 @@ void predict(int nlhs, mxArray *plhs[], const mxArray *prhs[], struct svm_model 
 			((total*sumpp-sump*sump)*(total*sumtt-sumt*sumt))
 			);
 	}
-	else
+	/*else
 		info("Accuracy = %g%% (%d/%d) (classification)\n",
 			(double)correct/total*100,correct,total);
+	*/
 
 	// return accuracy, mean squared error, squared correlation coefficient
 	tplhs[1] = mxCreateDoubleMatrix(3, 1, mxREAL);
