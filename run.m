@@ -1,3 +1,6 @@
+%Add libsvm to Matlab's path
+addpath('libsvm-3.20/matlab');
+
 target_number_of_features = 2;
 [~, higgs_data] = load_dataset();
 higgs_data = fill_missing_values(higgs_data, 'mean');
@@ -13,5 +16,11 @@ sprt_data = convert_to_sprt_data(higgs_data);
 [data_sequential_fs, indexes_sequential_fs] = sequentialFs(sprt_data, target_number_of_features, 1, 'my_fitlm');
 %}
 
-svm_model = train_svm(sprt_data.X(:,1:10)', sprt_data.y(1:10), 300);
-result = classify_svm(svm_model, sprt_data.X');
+%Training and classifying with MATLAB's SVM Implementation
+% svm_model = train_svm(sprt_data.X(:,1:10)', sprt_data.y(1:10), 300);
+% result = classify_svm(svm_model, sprt_data.X');
+
+%Using LIBSVM implementation in MATLAB
+svm_model2 = train_libsvm(sprt_data.X(:,1:10000)', sprt_data.y(1:10000));%This still runs in feasible time
+fprintf('Going to classify\n');
+result = classify_libsvm(svm_model2, sprt_data.X');
