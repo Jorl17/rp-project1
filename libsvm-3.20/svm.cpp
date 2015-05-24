@@ -1,4 +1,4 @@
-#include <math.h>
+	#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -44,7 +44,7 @@ static void print_string_stdout(const char *s)
 	fflush(stdout);
 }
 static void (*svm_print_string) (const char *) = &print_string_stdout;
-#if 1
+#if 0
 static void info(const char *fmt,...)
 {
 	char buf[BUFSIZ];
