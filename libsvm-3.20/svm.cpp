@@ -1283,6 +1283,7 @@ public:
 		if((start = cache->get_data(i,&data,len)) < len)
 		{
 			for(j=start;j<len;j++)
+				#pragma omp parallel for private(j)
 				data[j] = (Qfloat)(y[i]*y[j]*(this->*kernel_function)(i,j));
 		}
 		return data;
@@ -2524,6 +2525,7 @@ double svm_predict_values(const svm_model *model, const svm_node *x, double* dec
 		
 		double *kvalue = Malloc(double,l);
 		for(i=0;i<l;i++)
+			#pragma omp parallel for private(i)
 			kvalue[i] = Kernel::k_function(x,model->SV[i],model->param);
 
 		int *start = Malloc(int,nr_class);
