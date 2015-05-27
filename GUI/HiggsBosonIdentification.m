@@ -22,7 +22,7 @@ function varargout = HiggsBosonIdentification(varargin)
 
 % Edit the above text to modify the response to help HiggsBosonIdentification
 
-% Last Modified by GUIDE v2.5 27-May-2015 22:20:41
+% Last Modified by GUIDE v2.5 27-May-2015 22:53:37
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -89,6 +89,7 @@ handles.featureSelectionMethod = char();
 handles.featureReduction = 0;
 set(handles.featureReductionListBox, 'Visible', 'off');
 handles.featureReductionMethod = char();
+handles.classifier = char();
 
 % Update handles structure
 guidata(hObject, handles);
@@ -538,6 +539,22 @@ function featureReductionListBox_CreateFcn(hObject, ~, ~)
         set(hObject,'BackgroundColor','white');
     end
 
+    
+% --- Executes when selected object is changed in classifierButtonGroup.
+function classifierButtonGroup_SelectionChangedFcn(hObject, eventdata, handles)
+% hObject    handle to the selected object in classifierButtonGroup 
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+    selectedObject = get(handles.classifierButtonGroup, 'SelectedObject');
+    selectedObjectString = get(selectedObject, 'String');
+    
+    switch selectedObjectString
+        case 'SVM'
+            handles.classifier = 'svm';
+        case 'LIBSVM'
+            handles.classifier = 'libsvm';
+    end
 
 % --- Executes on button press in runButon.
 function runButon_Callback(hObject, eventdata, handles)
@@ -549,7 +566,7 @@ function runButon_Callback(hObject, eventdata, handles)
     
     % Check for input file
     if strcmp(handles.inputFilePath, '')
-        msgbox({'No Input File Specified! Please specify an Input File!'}, 'Invalid Parameters', 'error');
+        msgbox({'No Input File Specified! Please specify an Input File!'}, 'Invalid Input File', 'error');
         return ;
     end
     
@@ -561,6 +578,7 @@ function runButon_Callback(hObject, eventdata, handles)
     if handles.useInputFileForTrainAndClassification == 1 && handles.useInputFileForTrainClassificationAndValidation == 1
         % Check if the sum of the two percentages is smaller than 100
         if handles.percentageTraining + handles.percentageValidation > 100
+            msgbox({'Training and Validation Percentages exceed limit! Please specify a training and validation percentage such that Train+Validation <= 100!'}, 'Invalid Train and Validation Percentage', 'error');
             return ;
         end
     end
@@ -568,6 +586,9 @@ function runButon_Callback(hObject, eventdata, handles)
     % FIXME: Check for Feature Selection
     
     % FIXME: Check for Feature Reduction
-        
-        
-        
+    
+    % FIXME: Check for Classifier
+    if strcmp(handles.classifier, '')
+        msgbox({'No Classifier Selected! Please select a valid Classifier!'}, 'Invalid Classifier', 'error');
+    end
+    
