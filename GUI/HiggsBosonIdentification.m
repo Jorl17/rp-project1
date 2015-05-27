@@ -549,7 +549,6 @@ function runButon_Callback(hObject, eventdata, handles)
     
     % Check for input file
     if strcmp(handles.inputFilePath, '')
-        fprintf('No file specified!\n');
         msgbox({'No Input File Specified! Please specify an Input File!'}, 'Invalid Parameters', 'error');
         return ;
     end
