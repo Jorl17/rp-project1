@@ -13,6 +13,27 @@ addpath('libsvm-3.20/matlab');
 %[data_sequential_fs, indexes_sequential_fs] = sequentialFs(sprt_data, target_number_of_features, 1, 'my_fitlm');
 %}
 
+%{
+%Train and test a naive bayes classifier -- NOT ENTIRELY TESTED DUE TO
+%PROBLEM IN PREPARE_DATASET()
+bayes_model = train_naive_bayes(sprt_train.X, sprt_train.y);
+predicted_values = classify_naive_bayes(bayes_model, sprt_test.X);
+%}
+
+%{
+%Train and test a fitctree classifier -- NOT ENTIRELY TESTED DUE TO
+%PROBLEM IN PREPARE_DATASET()
+fitctree_model = train_fitctree(sprt_train.X, sprt_train.y);
+predicted_values = classify_tree(fitctree_model, sprt_test.X);
+%}
+
+%{
+%Train and test a fitrtree classifier -- NOT ENTIRELY TESTED DUE TO
+%PROBLEM IN PREPARE_DATASET()
+fitrtree_model = train_fitrtree(sprt_train.X, sprt_train.y);
+predicted_values = classify_tree(fitrtree_model, sprt_test.X);
+%}
+
 %Training and classifying with MATLAB's SVM Implementation
 svm_model = train_svm(sprt_train.X, sprt_train.y);
 fprintf('Going to classify\n');
