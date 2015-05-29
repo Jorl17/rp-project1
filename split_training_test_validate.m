@@ -1,4 +1,4 @@
-function [ train_data, validate_data, test_data ] = split_training_test_validate( sprt_data, train_pct, test_pct, validate_pct )
+function [ train_data, test_data, validate_data ] = split_training_test_validate( sprt_data, train_pct, test_pct, validate_pct )
     [~,num_data] = size(sprt_data.X);    
     [train_idx,validate_idx,test_idx]=dividerand(num_data,train_pct,validate_pct,test_pct);
     
