@@ -1,5 +1,0 @@
-function [ tree ] = train_fitctree( training_x, training_y )
-%TRAINFITCTREE creates a classification decision tree for predictors in X and class labels Y
-    tree = fitctree(training_x, training_y);
-end
-
