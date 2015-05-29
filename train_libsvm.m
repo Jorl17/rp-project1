@@ -10,5 +10,11 @@ function [ svm_model ] = train_libsvm( training_x, training_y )
 %   each training instance.
 %   This method returns a MATLAB SVMStruct object, containing the trained
 %   classifier.
-    svm_model = libsvmtrain(training_y, training_x);
+
+    % Check this link for more details regarding libsvmtrain's parameters:
+    % http://www.openpr.org.cn/files/help/rn01re19.html
+    % Might be interesting to change the type of kernel function? (default
+    % is the Radial Basis Function) Apart from this I don't think any other
+    % parameter is worth changing...
+    svm_model = libsvmtrain(training_y, training_x');
 end
