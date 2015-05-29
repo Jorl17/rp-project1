@@ -4,5 +4,5 @@ function [ tree ] = train_fitrtree( training_x, training_y )
 
     % The only parameter worth changing would probably be the cross
     % validation, but we decided to skip it for now
-    tree = fitrtree(training_x, training_y);
+    tree = fitrtree(training_x', training_y);
 end
