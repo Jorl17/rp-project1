@@ -11,5 +11,11 @@ function [ SVMStruct ] = train_svm( x_data, y_data )
 %   This method returns a MATLAB SVMStruct object, containing the trained
 %   classifier.
 
-    SVMStruct = fitcsvm(x_data', double(y_data));
+    % As in LIBSVM we could think about changing the kernel function,
+    % however the linear kernel function seems to be more suitable for our
+    % situation, since we have two classes...
+    % "Default: 'linear' for two-class learning and 'gaussian' (or 'rbf')
+    % for one-class learning" taken from MATLAB help
+    SVMStruct = fitcsvm(x_data', double(y_data), 'KernelFunction', 'linear');
+    %SVMStruct = fitcsvm(x_data', double(y_data), 'KernelFunction', 'RBF');
 end
