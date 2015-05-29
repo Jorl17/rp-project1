@@ -13,16 +13,17 @@ addpath('libsvm-3.20/matlab');
 %[data_sequential_fs, indexes_sequential_fs] = sequentialFs(sprt_data, target_number_of_features, 1, 'my_fitlm');
 %}
 
-%{
 %Training and classifying with MATLAB's SVM Implementation
-svm_model = train_svm(sprt_data.X(:,1:100)', sprt_data.y(1:100));
+svm_model = train_svm(sprt_train.X, sprt_train.y);
 fprintf('Going to classify\n');
-[labels, accuracy, posterior_probabilities] = classify_svm(svm_model, sprt_data.X', sprt_data.y);
+[labels, accuracy, posterior_probabilities] = classify_svm(svm_model, sprt_data.X, sprt_data.y);
 accuracy
 
+
 %Using LIBSVM implementation in MATLAB
-svm_model2 = train_libsvm(sprt_data.X(:,1:100000)', sprt_data.y(1:100000));%This still runs in feasible time
+%{
+svm_model2 = train_libsvm(sprt_train.X, sprt_train.y);
 fprintf('Going to classify\n');
-[predicted_label, accuracy, decision_values] = classify_libsvm(svm_model2, sprt_data.X', double(sprt_data.y));
+[predicted_label, accuracy, decision_values] = classify_libsvm(svm_model2, sprt_data_test.X, sprt_data.y);
 accuracy
 %}

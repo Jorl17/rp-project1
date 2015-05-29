@@ -13,7 +13,7 @@ function [ labels, accuracy, posterior_probabilities ] = classify_svm( svm_model
 %   second and third return values of this function.
 %   This method returns the classification for each instance, the accuracy
 %   of the classifier and the classification's posterior probabilities.
-    [labels, posterior_probabilities] = predict(svm_model, data);
+    [labels, posterior_probabilities] = predict(svm_model, data');
     %result = svmclassify(svm_model, data);
     if (iscell(varargin) && ~isempty(varargin))
         %True classification provided, compute classifier's accuracy

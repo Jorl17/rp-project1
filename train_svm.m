@@ -11,5 +11,5 @@ function [ SVMStruct ] = train_svm( x_data, y_data )
 %   This method returns a MATLAB SVMStruct object, containing the trained
 %   classifier.
 
-    SVMStruct = fitcsvm(x_data, y_data);
+    SVMStruct = fitcsvm(x_data', double(y_data));
 end
