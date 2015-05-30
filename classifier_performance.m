@@ -1,4 +1,4 @@
-function [FP, FN, accuracy, sensitivity, specificity, F1] = classifier_performance(predicted_y, true_y)
+function [FP, FN, TP, TN, accuracy, sensitivity, specificity, F1] = classifier_performance(predicted_y, true_y)
     if size(predicted_y) ~= size(true_y)
         predicted_y = predicted_y';
     end
