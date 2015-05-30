@@ -22,7 +22,7 @@ function varargout = HiggsBosonIdentification(varargin)
 
 % Edit the above text to modify the response to help HiggsBosonIdentification
 
-% Last Modified by GUIDE v2.5 30-May-2015 15:52:33
+% Last Modified by GUIDE v2.5 30-May-2015 16:33:47
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -78,6 +78,9 @@ set(handles.selectFileForValidationPanel, 'Visible', 'off');
 handles.useSameFileForTrainingAndValidation = 1;
 set(handles.selectFileForValidationPanel, 'Visible', 'off');
 
+set(handles.classifierParameterText, 'Visible', 'on');
+set(handles.classifierParameterEdit, 'Visible', 'on');
+
 % Set default training file and percentage
 handles.trainFilePath = char();
 handles.percentageTraining = 0;
@@ -103,7 +106,7 @@ handles.featureSelectionMethod = char();
 handles.featureReduction = 0;
 set(handles.featureReductionListBox, 'Visible', 'off');
 handles.featureReductionMethod = char();
-handles.classifier = 'KNN';
+handles.classifier = 'knn';
 
 % Update handles structure
 guidata(hObject, handles);
@@ -499,7 +502,7 @@ function featureReductionListBox_CreateFcn(hObject, ~, ~)
 
     
 % --- Executes when selected object is changed in classifierButtonGroup.
-function classifierButtonGroup_SelectionChangedFcn(hObject, eventdata, handles)
+function classifierButtonGroup_SelectionChangedFcn(hObject, ~, handles)
 % hObject    handle to the selected object in classifierButtonGroup 
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -507,12 +510,29 @@ function classifierButtonGroup_SelectionChangedFcn(hObject, eventdata, handles)
     selectedObject = get(handles.classifierButtonGroup, 'SelectedObject');
     selectedObjectString = get(selectedObject, 'String');
     
-    switch selectedObjectString
-        case 'SVM'
+    if strcmp(selectedObjectString, 'SVM') == 1
             handles.classifier = 'svm';
-        case 'LIBSVM'
+            % Hide classifier parameter
+            set(handles.classifierParameterText, 'Visible', 'off');
+            set(handles.classifierParameterEdit, 'Visible', 'off');
+    elseif strcmp(selectedObjectString, 'LIBSVM') == 1
             handles.classifier = 'libsvm';
+            % Hide classifier parameter
+            set(handles.classifierParameterText, 'Visible', 'off');
+            set(handles.classifierParameterEdit, 'Visible', 'off');
+    elseif strcmp(selectedObjectString, 'KNN') == 1
+            handles.classifier = 'knn';
+            % Show classifier parameter
+            set(handles.classifierParameterText, 'Visible', 'on');
+            set(handles.classifierParameterEdit, 'Visible', 'on');
+    elseif strcmp(selectedObjectString, 'Naive Bayes')
+            handles.classifier = 'naiveBayes';
+            % Hide classifier parameter
+            set(handles.classifierParameterText, 'Visible', 'off');
+            set(handles.classifierParameterEdit, 'Visible', 'off');
     end
+    
+    fprintf('O object e |||%s||| e deu %s\n', selectedObjectString, handles.classifier);
     
     % Update handles structure
     guidata(hObject, handles);    
@@ -635,6 +655,33 @@ function oversampleTrainingDataCheckbox_Callback(hObject, ~, handles)
     guidata(hObject, handles)
     
     
+% --- Executes on button press in oversampleTrainingDataCheckbox.
+function svmRadioButton_Callback(~, ~, ~)
+% hObject    handle to oversampleTrainingDataCheckbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in oversampleTrainingDataCheckbox.
+function libsvmRadioButton_Callback(~, ~, ~)
+% hObject    handle to oversampleTrainingDataCheckbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in oversampleTrainingDataCheckbox.
+function knnRadioButton_Callback(~, ~, ~)
+% hObject    handle to oversampleTrainingDataCheckbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in oversampleTrainingDataCheckbox.
+function naiveBayesRadionButton_Callback(~, ~, ~)
+% hObject    handle to oversampleTrainingDataCheckbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+    
 % --- Executes on button press in runButon.
 function runButon_Callback(hObject, eventdata, handles)
 % hObject    handle to runButon (see GCBO)
@@ -662,4 +709,28 @@ function runButon_Callback(hObject, eventdata, handles)
     % FIXME: Check for Classifier
     if strcmp(handles.classifier, '')
         msgbox({'No Classifier Selected! Please select a valid Classifier!'}, 'Invalid Classifier', 'error');
+    % FIXME: Confirm valid option and parameter, in case such applies
+    % get(handles.classifierParameterEdit, 'String') to get the parameter
+    end
+
+
+function classifierParameterEdit_Callback(~, ~, ~)
+% hObject    handle to classifierParameterEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+    % Hints: get(hObject,'String') returns contents of classifierParameterEdit as text
+    %        str2double(get(hObject,'String')) returns contents of classifierParameterEdit as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function classifierParameterEdit_CreateFcn(hObject, ~, ~)
+% hObject    handle to classifierParameterEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+    % Hint: edit controls usually have a white background on Windows.
+    %       See ISPC and COMPUTER.
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
     end
