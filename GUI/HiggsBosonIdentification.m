@@ -22,7 +22,7 @@ function varargout = HiggsBosonIdentification(varargin)
 
 % Edit the above text to modify the response to help HiggsBosonIdentification
 
-% Last Modified by GUIDE v2.5 30-May-2015 20:26:05
+% Last Modified by GUIDE v2.5 31-May-2015 00:36:35
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -72,34 +72,38 @@ set(handles.browseFileTrainText, 'String', 'No Input File Selected!');
 set(handles.inputFileText, 'Visible', 'off');
 set(handles.browseFileButton, 'Visible', 'off');
 handles.trainFilePath = char();
+handles.classifierFilePath = char();
+handles.classificationFilePath = char();
 handles.useDifferentDatasetForClassification = 0;
 set(handles.selectFileForValidationPanel, 'Visible', 'off');
 
 handles.useSameFileForTrainingAndValidation = 1;
 set(handles.selectFileForValidationPanel, 'Visible', 'off');
+set(handles.selectClassifierPanel, 'Visible', 'off');
 
 set(handles.classifierParameterText, 'Visible', 'on');
 set(handles.classifierParameterEdit, 'Visible', 'on');
 
+set(handles.saveClassifierButton, 'Visible', 'off');
+
+set(handles.knnParameterText, 'Visible', 'off');
+set(handles.knnParameterFillMissingValuesEdit, 'Visible', 'off');
+
 % Set default training file and percentage
-handles.trainFilePath = char();
-handles.percentageTraining = 0;
-handles.percentageValidation = 0;
+handles.percentageTraining = 100;
+handles.percentageTest = 0;
 set(handles.trainPercentageText, 'Visible', 'on');
-set(handles.trainPercentageText, 'String', 'Train: 0%');
+set(handles.trainPercentageText, 'String', 'Train: 100%');
+set(handles.testPercentageText, 'String', 'Test: 0%');
 set(handles.trainingPercentageSlider, 'Visible', 'on');
-set(handles.validationPercentageText, 'Visible', 'on');
-set(handles.validationPercentageText, 'String', 'Validation: 0%');
-set(handles.validationPercentageSlider, 'Visible', 'on');
 set(handles.fillMissingValuesCheckbox, 'Visible', 'on');
 set(handles.fillMissingValuesListBox, 'Visible', 'off');
 handles.fillMissingValues = 0;
 handles.fillMissingValuesMethod = char();
-set(handles.featureReductionCheckbox, 'Visible', 'on');
-set(handles.targetNumberOfFeaturesText, 'Visible', 'off');
-set(handles.targetNumberOfFeatures, 'Visible','off');
+handles.fillMissingValuesKNNParameter = 5;
 handles.performFeatureReduction = 0;
-handles.targetNumberFeatures = 0;
+handles.targetNumberFeaturesFeatureReduction = 15;
+handles.targetNumberFeaturesFeatureSelection = 7;
 handles.featureSelection = 0;
 set(handles.featureSelectionListBox, 'Visible', 'off');
 handles.featureSelectionMethod = char();
@@ -107,6 +111,17 @@ handles.featureReduction = 0;
 set(handles.featureReductionListBox, 'Visible', 'off');
 handles.featureReductionMethod = char();
 handles.classifier = 'knn';
+handles.loadClassifier = 0;
+handles.classifierParameter = 40;
+
+set(handles.selectFileForClassiifcationPanel, 'Visible', 'off');
+
+set(handles.selectTrainAndValidationPercentagesPanel, 'Visible', 'on');
+
+set(handles.featureReductionTargetNumberFeaturesText, 'Visible', 'off');
+set(handles.featureReductionTargetNumberFeaturesEdit, 'Visible', 'off');
+set(handles.featureSelectionTargetNumberFeaturesText, 'Visible', 'off');
+set(handles.featureSelectionTargetNumberFeaturesEdit, 'Visible', 'off');
 
 % Update handles structure
 guidata(hObject, handles);
@@ -226,9 +241,11 @@ function trainingPercentageSlider_Callback(hObject, ~, handles)
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 
-    handles.percentageTraining = int64(get(hObject, 'Value') * 100);
+    handles.percentageTraining = 100 - int64(get(hObject, 'Value') * 100);
+    handles.percentageTest = int64(get(hObject, 'Value') * 100);
     % Update text and slider
     set(handles.trainPercentageText, 'String', strcat('Train: ', num2str(handles.percentageTraining), '%'));
+    set(handles.testPercentageText, 'String', strcat('Train: ', num2str(handles.percentageTest), '%'));
     
     % Update handles structure
     guidata(hObject, handles);
@@ -307,6 +324,16 @@ function fillMissingValuesListBox_Callback(hObject, ~, handles)
     contents = cellstr(get(hObject,'String'));
     handles.fillMissingValuesMethod = contents{get(hObject,'Value')};
     
+    if strcmp(handles.fillMissingValuesMethod, 'KNN')
+        % Show
+        set(handles.knnParameterText, 'Visible', 'on');
+        set(handles.knnParameterFillMissingValuesEdit, 'Visible', 'on');
+    else
+        % Hide
+        set(handles.knnParameterText, 'Visible', 'off');
+        set(handles.knnParameterFillMissingValuesEdit, 'Visible', 'off');
+    end
+    
     % Update handles structure
     guidata(hObject, handles);
 
@@ -384,9 +411,13 @@ function featureSelectionCheckbox_Callback(hObject, ~, handles)
     if handles.featureSelection == 1
         % Show feature selection list box
         set(handles.featureSelectionListBox, 'Visible', 'on');
+        set(handles.featureSelectionTargetNumberFeaturesText, 'Visible', 'on');
+        set(handles.featureSelectionTargetNumberFeaturesEdit, 'Visible', 'on');
     else
         % Hide feature selection list box
         set(handles.featureSelectionListBox, 'Visible', 'off');
+        set(handles.featureSelectionTargetNumberFeaturesText, 'Visible', 'off');
+        set(handles.featureSelectionTargetNumberFeaturesEdit, 'Visible', 'off');
     end
     
     % Update handles structure
@@ -453,9 +484,13 @@ function featureReductionCheckBox_Callback(hObject, ~, handles)
     if handles.featureReduction == 1
         % Show feature reduction list box
         set(handles.featureReductionListBox, 'Visible', 'on');
+        set(handles.featureReductionTargetNumberFeaturesText, 'Visible', 'on');
+        set(handles.featureReductionTargetNumberFeaturesEdit, 'Visible', 'on');
     else
         % Hide feature reduction list box
         set(handles.featureReductionListBox, 'Visible', 'off');
+        set(handles.featureReductionTargetNumberFeaturesText, 'Visible', 'off');
+        set(handles.featureReductionTargetNumberFeaturesEdit, 'Visible', 'off');
     end 
         
     % Update handles structure
@@ -567,23 +602,6 @@ function useDefaultFileCheckbox_Callback(hObject, ~, handles)
     guidata(hObject, handles);
 
 
-% --- Executes on button press in selectDifferentdataSetClassification.
-function selectDifferentdataSetClassification_Callback(hObject, ~, handles)
-% hObject    handle to selectDifferentdataSetClassification (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-    % Hint: get(hObject,'Value') returns toggle state of selectDifferentdataSetClassification
-    handles.useDifferentDatasetForClassification = get(hObject, 'Value');
-    if handles.useDifferentDatasetForClassification == 1
-        set(handles.selectFileForValidationPanel, 'Visible', 'on');
-        set(handles.usePreviousFileForTrainingAndValidationCheckbox, 'Value', 0.0);
-    else
-        set(handles.selectFileForValidationPanel, 'Visible', 'off');
-        set(handles.usePreviousFileForTrainingAndValidationCheckbox, 'Value', 1.0);
-    end
-
-
 % --- Executes on button press in browseFileTrainButton.
 function browseFileTrainButton_Callback(hObject, ~, handles)
 % hObject    handle to browseFileTrainButton (see GCBO)
@@ -600,6 +618,39 @@ function browseFileTrainButton_Callback(hObject, ~, handles)
     % Update handles structure
     guidata(hObject, handles);
     
+    
+% --- Executes on button press in brosweFileClassificationButton.
+function brosweFileClassificationButton_Callback(hObject, ~, handles)
+% hObject    handle to brosweFileClassificationButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+    % Select the input file
+    [filename, pathname] = uigetfile({'*.mat','Binary MATLAB format file (*.mat)'},'Choose an Input File');
+    handles.classificationFilePath = [pathname filename];
+    
+    % Update the filename in the handles structure
+    set(handles.browseFileClasificationText, 'String', filename);
+    
+    % Update handles structure
+    guidata(hObject, handles);
+    
+
+% --- Executes on button press in browseClassifierButton.
+function browseClassifierButton_Callback(hObject, ~, handles)
+% hObject    handle to browseClassifierButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+    % Select the input file
+    [filename, pathname] = uigetfile({'*.mat','Binary MATLAB format file (*.mat)'},'Choose an Input File');
+    handles.classifierFilePath = [pathname filename];
+    
+    % Update the filename in the handles structure
+    set(handles.browseClassifierText, 'String', filename);
+    
+    % Update handles structure
+    guidata(hObject, handles);
 
 
 % --- Executes on button press in usePreviousFileForTrainingAndValidationCheckbox.
@@ -611,18 +662,79 @@ function usePreviousFileForTrainingAndValidationCheckbox_Callback(hObject, ~, ha
     % Hint: get(hObject,'Value') returns toggle state of usePreviousFileForTrainingAndValidationCheckbox
     handles.useSameFileForTrainingAndValidation = get(hObject, 'Value');
     if handles.useSameFileForTrainingAndValidation == 1
-       % Hide file selection panel
        set(handles.selectFileForValidationPanel, 'Visible', 'off');
        set(handles.selectDifferentdataSetClassification, 'Value', 0.0);
+       set(handles.loadClassifierCheckbox, 'Value', 0.0);
+       set(handles.classifierButtonGroup, 'Visible', 'on');
+       set(handles.selectFileForClassiifcationPanel, 'Visible', 'off');
+       set(handles.browseFileClasificationText, 'String', 'No Input File Selected!');
+       set(handles.selectClassifierPanel, 'Visible', 'off');
+       set(handles.browseClassifierText, 'String', 'No Input File Selected!');
+       set(handles.selectTrainAndValidationPercentagesPanel, 'Visible', 'on');
     else
-       % Show file selection panel
-       set(handles.selectFileForValidationPanel, 'Visible', 'on');
-       set(handles.selectDifferentdataSetClassification, 'Value', 1.0);
+       % set(handles.selectFileForValidationPanel, 'Visible', 'on');
+       set(handles.selectTrainAndValidationPercentagesPanel, 'Visible', 'off');
+       set(handles.classifierButtonGroup, 'Visible', 'off');
     end
 
     % Update handles structure
     guidata(hObject, handles);
     
+% --- Executes on button press in selectDifferentdataSetClassification.
+function selectDifferentdataSetClassification_Callback(hObject, ~, handles)
+% hObject    handle to selectDifferentdataSetClassification (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+    % Hint: get(hObject,'Value') returns toggle state of selectDifferentdataSetClassification
+    handles.useDifferentDatasetForClassification = get(hObject, 'Value');
+    if handles.useDifferentDatasetForClassification == 1
+        set(handles.selectFileForValidationPanel, 'Visible', 'on');
+        set(handles.loadClassifierCheckbox, 'Value', 0.0);
+        set(handles.classifierButtonGroup, 'Visible', 'on');
+        set(handles.selectFileForClassiifcationPanel, 'Visible', 'off');
+        set(handles.browseClassifierText , 'String', 'no Input File Selected!');
+        set(handles.browseFileClasificationText, 'String', 'No Input File Selected!');
+        set(handles.usePreviousFileForTrainingAndValidationCheckbox, 'Value', 0.0);
+        set(handles.selectTrainAndValidationPercentagesPanel, 'Visible', 'off');
+        set(handles.selectClassifierPanel, 'Visible', 'off');
+        set(handles.browseClassifierText , 'String', 'No Input File Selected!');
+    else
+        set(handles.selectFileForValidationPanel, 'Visible', 'off');
+        set(handles.classifierButtonGroup, 'Visible', 'off');
+    end
+    
+    % Update handles structure
+    guidata(hObject, handles);
+    
+% --- Executes on button press in loadClassifierCheckbox.
+function loadClassifierCheckbox_Callback(hObject, ~, handles)
+% hObject    handle to loadClassifierCheckbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+    % Hint: get(hObject,'Value') returns toggle state of loadClassifierCheckbox
+    handles.loadClassifier = get(hObject,'Value');
+    
+    if handles.loadClassifier == 1
+        set(handles.usePreviousFileForTrainingAndValidationCheckbox, 'Value', 0.0);
+        set(handles.selectDifferentdataSetClassification, 'Value', 0.0);
+        set(handles.selectTrainAndValidationPercentagesPanel, 'Visible', 'off');
+        set(handles.classifierButtonGroup, 'Visible', 'off');
+        set(handles.selectFileForValidationPanel, 'Visible', 'off');
+        set(handles.browseFileTrainText, 'String', 'No Input File Selected!');
+        set(handles.selectFileForClassiifcationPanel, 'Visible', 'on');
+        set(handles.selectClassifierPanel, 'Visible', 'on');
+    else
+        % set(handles.classifierButtonGroup, 'Visible', 'on');
+        set(handles.selectFileForClassiifcationPanel, 'Visible', 'off');
+        set(handles.selectClassifierPanel, 'Visible', 'off');
+        set(handles.browseClassifierText , 'String', 'No Input File Selected!');
+        set(handles.browseFileClasificationText, 'String', 'No Input File Selected!');
+    end
+    
+    % Update handles structure
+    guidata(hObject, handles);    
 
 
 % --- Executes on button press in undersampleTrainingDataCheckbox.
@@ -669,7 +781,7 @@ function resultsTable_CreateFcn(hObject, ~, handles)
 % handles    empty - handles not created until after all CreateFcns called
 
     set(hObject, 'Data', -1*ones(2));
-    set(hObject, 'RowName', {'Predicted correct', 'Predicted Incorrect'}, 'ColumnName', {'Classified Correct', 'Classified Incorrect'});
+    set(hObject, 'RowName', {'Predicted correct', 'Predicted Incorrect'}, 'ColumnName', {'Real Correct', 'Real Incorrect'});
     
     % Update handles structure
     guidata(hObject, handles)
@@ -738,6 +850,7 @@ function classifierParameterEdit_Callback(~, ~, ~)
 
     % Hints: get(hObject,'String') returns contents of classifierParameterEdit as text
     %        str2double(get(hObject,'String')) returns contents of classifierParameterEdit as a double
+    handles.classifierParameter = str2double(get(hObject,'String'));
 
 
 % --- Executes during object creation, after setting all properties.
@@ -759,7 +872,14 @@ function runButon_Callback(hObject, ~, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-    % FIXME: Check for valid parameters!
+    %{
+    if utilizar classificador gaurdado
+        classiifier = load_classifier(Caminho para o classificador)
+
+    %}
+
+
+
     
     % Check for input file
     if strcmp(handles.inputFilePath, '')
@@ -784,5 +904,86 @@ function runButon_Callback(hObject, ~, handles)
     % get(handles.classifierParameterEdit, 'String') to get the parameter
     end
     
+    set(handles.saveClassifierButton, 'Visible', 'on');
+    
     % Update handles structure
     guidata(hObject, handles);
+
+
+
+function featureReductionTargetNumberFeaturesEdit_Callback(hObject, eventdata, handles)
+% hObject    handle to featureReductionTargetNumberFeaturesEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+    % Hints: get(hObject,'String') returns contents of featureReductionTargetNumberFeaturesEdit as text
+    %        str2double(get(hObject,'String')) returns contents of featureReductionTargetNumberFeaturesEdit as a double
+        handles.targetNumberFeaturesFeatureReduction = str2double(get(hObject,'String'));
+
+
+% --- Executes during object creation, after setting all properties.
+function featureReductionTargetNumberFeaturesEdit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to featureReductionTargetNumberFeaturesEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+    % Hint: edit controls usually have a white background on Windows.
+    %       See ISPC and COMPUTER.
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+
+
+
+function featureSelectionTargetNumberFeaturesEdit_Callback(hObject, eventdata, handles)
+% hObject    handle to featureSelectionTargetNumberFeaturesEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+    % Hints: get(hObject,'String') returns contents of featureSelectionTargetNumberFeaturesEdit as text
+    %        str2double(get(hObject,'String')) returns contents of featureSelectionTargetNumberFeaturesEdit as a double
+    handles.targetNumberFeaturesFeatureSelection = str2double(get(hObject,'String'));
+
+
+% --- Executes during object creation, after setting all properties.
+function featureSelectionTargetNumberFeaturesEdit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to featureSelectionTargetNumberFeaturesEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+    % Hint: edit controls usually have a white background on Windows.
+    %       See ISPC and COMPUTER.
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+
+
+% --- Executes on button press in saveClassifierButton.
+function saveClassifierButton_Callback(hObject, eventdata, handles)
+% hObject    handle to saveClassifierButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+
+function knnParameterFillMissingValuesEdit_Callback(hObject, ~, handles)
+% hObject    handle to knnParameterFillMissingValuesEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+    % Hints: get(hObject,'String') returns contents of knnParameterFillMissingValuesEdit as text
+    %        str2double(get(hObject,'String')) returns contents of knnParameterFillMissingValuesEdit as a double
+    handles.fillMissingValuesKNNParameter = str2double(get(hObject,'String'));
+
+
+% --- Executes during object creation, after setting all properties.
+function knnParameterFillMissingValuesEdit_CreateFcn(hObject, ~, ~)
+% hObject    handle to knnParameterFillMissingValuesEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+    % Hint: edit controls usually have a white background on Windows.
+    %       See ISPC and COMPUTER.
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
