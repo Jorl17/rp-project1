@@ -22,7 +22,7 @@ function varargout = HiggsBosonIdentification(varargin)
 
 % Edit the above text to modify the response to help HiggsBosonIdentification
 
-% Last Modified by GUIDE v2.5 30-May-2015 20:14:30
+% Last Modified by GUIDE v2.5 30-May-2015 20:26:05
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -671,10 +671,21 @@ function resultsTable_CreateFcn(hObject, ~, handles)
     set(hObject, 'Data', -1*ones(2));
     set(hObject, 'RowName', {'Predicted correct', 'Predicted Incorrect'}, 'ColumnName', {'Classified Correct', 'Classified Incorrect'});
     
-    
     % Update handles structure
     guidata(hObject, handles)
     
+    
+% --- Executes during object creation, after setting all properties.
+function furtherResultsTable_CreateFcn(hObject, ~, handles)
+% hObject    handle to furtherResultsTable (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+    set(hObject, 'Data', -1*ones(4,1));
+    set(hObject, 'RowName', {'Accuracy', 'Sensitivity', 'Specificity', 'F-Measure'}, 'ColumnName', {'Value'});
+    
+    % Update handles structure
+    guidata(hObject, handles)
     
 % --- Executes on button press in oversampleTrainingDataCheckbox.
 function svmRadioButton_Callback(~, ~, ~)
@@ -774,4 +785,4 @@ function runButon_Callback(hObject, ~, handles)
     end
     
     % Update handles structure
-    guidata(hObject, handles)
+    guidata(hObject, handles);
