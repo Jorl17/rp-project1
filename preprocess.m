@@ -1,4 +1,4 @@
-function [selected_features, feature_extraction_model, sprt_train, sprt_test] = preprocess(higgs_data, missing_value_method, feature_selection_method, feature_extraction_method, target_number_of_features_feature_selection, target_number_of_features_feature_extraction, balancing_method, train_pct, test_pct, validate_pct, varargin)
+function [selected_features, feature_extraction_model, sprt_data_balanced] = preprocess(higgs_data, missing_value_method, feature_selection_method, feature_extraction_method, target_number_of_features_feature_selection, target_number_of_features_feature_extraction, balancing_method, varargin)
     %Remember that data is NOT SPRT_DATA
     
     if strcmp(missing_value_method, 'knn')
@@ -11,5 +11,5 @@ function [selected_features, feature_extraction_model, sprt_train, sprt_test] = 
     [sprt_data,feature_extraction_model] = feature_extraction(sprt_data_original, feature_extraction_method, target_number_of_features_feature_extraction);
     [sprt_data, selected_features] = feature_selection(sprt_data, feature_selection_method, target_number_of_features_feature_selection);
     sprt_data_balanced = balance_dataset(sprt_data, balancing_method);
-    [sprt_train, sprt_test, ~] = split_training_test_validate(sprt_data_balanced, train_pct, test_pct, validate_pct);
+    %[sprt_train, sprt_test, ~] = split_training_test_validate(sprt_data_balanced, train_pct, test_pct, validate_pct);
 end
