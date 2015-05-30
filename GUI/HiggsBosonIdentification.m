@@ -22,7 +22,7 @@ function varargout = HiggsBosonIdentification(varargin)
 
 % Edit the above text to modify the response to help HiggsBosonIdentification
 
-% Last Modified by GUIDE v2.5 30-May-2015 19:38:01
+% Last Modified by GUIDE v2.5 30-May-2015 20:14:30
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -658,6 +658,19 @@ function oversampleTrainingDataCheckbox_Callback(hObject, ~, handles)
         handles.balanceTrainingData = 'undersample';
         set(handles.undersampleTrainingDataCheckbox, 'Value', 1.0);
     end
+    
+    % Update handles structure
+    guidata(hObject, handles)
+    
+% --- Executes during object creation, after setting all properties.
+function resultsTable_CreateFcn(hObject, ~, handles)
+% hObject    handle to resultsTable (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+    set(hObject, 'Data', cell(2));
+    set(hObject, 'RowName', {'Predicted correct', 'Predicted Incorrect'}, 'ColumnName', {'Classified Correct', 'Classified Incorrect'});
+    
     
     % Update handles structure
     guidata(hObject, handles)
