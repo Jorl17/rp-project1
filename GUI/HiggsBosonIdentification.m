@@ -22,7 +22,7 @@ function varargout = HiggsBosonIdentification(varargin)
 
 % Edit the above text to modify the response to help HiggsBosonIdentification
 
-% Last Modified by GUIDE v2.5 30-May-2015 16:33:47
+% Last Modified by GUIDE v2.5 30-May-2015 19:38:01
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -530,16 +530,24 @@ function classifierButtonGroup_SelectionChangedFcn(hObject, ~, handles)
             % Hide classifier parameter
             set(handles.classifierParameterText, 'Visible', 'off');
             set(handles.classifierParameterEdit, 'Visible', 'off');
+    elseif strcmp(selectedObjectString, 'Reg Tree')
+            handles.classifier = 'fitrtree';
+            % Hide classifier parameter
+            set(handles.classifierParameterText, 'Visible', 'off');
+            set(handles.classifierParameterEdit, 'Visible', 'off');
+    elseif strcmp(selectedObjectString, 'Class Tree')
+            handles.classifier = 'fitctree';
+            % Hide classifier parameter
+            set(handles.classifierParameterText, 'Visible', 'off');
+            set(handles.classifierParameterEdit, 'Visible', 'off');
     end
-    
-    fprintf('O object e |||%s||| e deu %s\n', selectedObjectString, handles.classifier);
     
     % Update handles structure
     guidata(hObject, handles);    
 
 
 % --- Executes on button press in useDefaultFileCheckbox.
-function useDefaultFileCheckbox_Callback(hObject, eventdata, handles)
+function useDefaultFileCheckbox_Callback(hObject, ~, handles)
 % hObject    handle to useDefaultFileCheckbox (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -681,9 +689,48 @@ function naiveBayesRadionButton_Callback(~, ~, ~)
 % hObject    handle to oversampleTrainingDataCheckbox (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+% --- Executes on button press in fitrtreeButton.
+function fitrtreeButton_Callback(~, ~, ~)
+% hObject    handle to fitrtreeButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of fitrtreeButton
+
+% --- Executes on button press in classificationTreeRadioButton.
+function classificationTreeRadioButton_Callback(~, ~, ~)
+% hObject    handle to classificationTreeRadioButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of classificationTreeRadioButton
+
+
+function classifierParameterEdit_Callback(~, ~, ~)
+% hObject    handle to classifierParameterEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+    % Hints: get(hObject,'String') returns contents of classifierParameterEdit as text
+    %        str2double(get(hObject,'String')) returns contents of classifierParameterEdit as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function classifierParameterEdit_CreateFcn(hObject, ~, ~)
+% hObject    handle to classifierParameterEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+    % Hint: edit controls usually have a white background on Windows.
+    %       See ISPC and COMPUTER.
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+
     
 % --- Executes on button press in runButon.
-function runButon_Callback(hObject, eventdata, handles)
+function runButon_Callback(hObject, ~, handles)
 % hObject    handle to runButon (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -712,25 +759,6 @@ function runButon_Callback(hObject, eventdata, handles)
     % FIXME: Confirm valid option and parameter, in case such applies
     % get(handles.classifierParameterEdit, 'String') to get the parameter
     end
-
-
-function classifierParameterEdit_Callback(~, ~, ~)
-% hObject    handle to classifierParameterEdit (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-    % Hints: get(hObject,'String') returns contents of classifierParameterEdit as text
-    %        str2double(get(hObject,'String')) returns contents of classifierParameterEdit as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function classifierParameterEdit_CreateFcn(hObject, ~, ~)
-% hObject    handle to classifierParameterEdit (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-    % Hint: edit controls usually have a white background on Windows.
-    %       See ISPC and COMPUTER.
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
+    
+    % Update handles structure
+    guidata(hObject, handles)

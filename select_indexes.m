@@ -3,4 +3,6 @@ function [ data ] = select_indexes ( data, indexes )
 
     data.X = data.X(indexes, :);
     data.y = data.y(indexes);
+    
+    data = convert_to_sprt_data([data.X' data.y]);
 end
