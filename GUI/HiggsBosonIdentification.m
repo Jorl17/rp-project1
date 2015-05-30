@@ -22,7 +22,7 @@ function varargout = HiggsBosonIdentification(varargin)
 
 % Edit the above text to modify the response to help HiggsBosonIdentification
 
-% Last Modified by GUIDE v2.5 27-May-2015 22:53:37
+% Last Modified by GUIDE v2.5 30-May-2015 16:33:47
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -59,21 +59,38 @@ handles.output = hObject;
 % FUNCTION BUT I CANNOT MAKE THIS WORK LIKE THAT
 % Show default Panel
 setVisibility(handles, 1);
+
+handles.useDefaultFile = 1;
+handles.defaultFilePath = 'E:\Universidade\Engenharia Informática\4º Ano\2º Semestre\RP\Projecto\rp-project1\dataset\higgs_data.m'; %FIXME: CHANGE THIS TO AVOID USING AN ABSOLUTE PATH!!!
+handles.inputFilePath = handles.defaultFilePath; %Default file
+
+handles.balanceTrainingData = 'undersampling';
+
 % Set inputFile default text
 set(handles.inputFileText, 'String', 'No Input File Selected!');
-% Set default training file and percentage
-handles.inputFilePath=char();
+set(handles.browseFileTrainText, 'String', 'No Input File Selected!');
+set(handles.inputFileText, 'Visible', 'off');
+set(handles.browseFileButton, 'Visible', 'off');
 handles.trainFilePath = char();
-handles.useInputFileForTrainAndClassification = 0;
-handles.useInputFileForTrainClassificationAndValidation = 0;
+handles.useDifferentDatasetForClassification = 0;
+set(handles.selectFileForValidationPanel, 'Visible', 'off');
+
+handles.useSameFileForTrainingAndValidation = 1;
+set(handles.selectFileForValidationPanel, 'Visible', 'off');
+
+set(handles.classifierParameterText, 'Visible', 'on');
+set(handles.classifierParameterEdit, 'Visible', 'on');
+
+% Set default training file and percentage
+handles.trainFilePath = char();
 handles.percentageTraining = 0;
 handles.percentageValidation = 0;
-set(handles.trainPercentageText, 'Visible', 'off');
+set(handles.trainPercentageText, 'Visible', 'on');
 set(handles.trainPercentageText, 'String', 'Train: 0%');
-set(handles.trainingPercentageSlider, 'Visible', 'off');
-set(handles.validationPercentageText, 'Visible', 'off');
+set(handles.trainingPercentageSlider, 'Visible', 'on');
+set(handles.validationPercentageText, 'Visible', 'on');
 set(handles.validationPercentageText, 'String', 'Validation: 0%');
-set(handles.validationPercentageSlider, 'Visible', 'off');
+set(handles.validationPercentageSlider, 'Visible', 'on');
 set(handles.fillMissingValuesCheckbox, 'Visible', 'on');
 set(handles.fillMissingValuesListBox, 'Visible', 'off');
 handles.fillMissingValues = 0;
@@ -89,7 +106,7 @@ handles.featureSelectionMethod = char();
 handles.featureReduction = 0;
 set(handles.featureReductionListBox, 'Visible', 'off');
 handles.featureReductionMethod = char();
-handles.classifier = char();
+handles.classifier = 'knn';
 
 % Update handles structure
 guidata(hObject, handles);
@@ -195,62 +212,6 @@ function browseFileButton_Callback(hObject, ~, handles)
     
     % Update the filename in the handles structure
     set(handles.inputFileText, 'String', filename);
-    
-    % Update handles structure
-    guidata(hObject, handles);
-    
-
-
-% --- Executes on button press in useDatasetForTrainingClassificationCheckbox.
-function useDatasetForTrainingClassificationCheckbox_Callback(hObject, ~, handles)
-% hObject    handle to useDatasetForTrainingClassificationCheckbox (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-    % Hint: get(hObject,'Value') returns toggle state of useDatasetForTrainingClassificationCheckbox    
-    handles.useInputFileForTrainAndClassification = get(hObject, 'Value');
-    if handles.useInputFileForTrainAndClassification == 1
-        handles.trainFilePath = handles.inputFilePath;
-        set(handles.trainPercentageText, 'Visible', 'on');
-        set(handles.trainingPercentageSlider, 'Visible', 'on');
-    elseif handles.useInputFileForTrainClassificationAndValidation == 0
-        set(handles.trainPercentageText, 'Visible', 'off');
-        set(handles.trainingPercentageSlider, 'Visible', 'off');
-        handles.trainFilePath = '';
-        % FIXME: RESET TRAIN FILE IN THE TRAINING TAB
-    end
-
-    % Update handles structure
-    guidata(hObject, handles);
-
-    
-% --- Executes on button press in useDatasetForTrainingClassificationValidationCheckbox.
-function useDatasetForTrainingClassificationValidationCheckbox_Callback(hObject, ~, handles)
-% hObject    handle to useDatasetForTrainingClassificationValidationCheckbox (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-    % Hint: get(hObject,'Value') returns toggle state of useDatasetForTrainingClassificationValidationCheckbox
-    handles.useInputFileForTrainClassificationAndValidation = get(hObject, 'Value');
-    if handles.useInputFileForTrainClassificationAndValidation == 1
-        handles.trainFilePath = handles.inputFilePath;
-        %Show second slider and text
-        set(handles.trainPercentageText, 'Visible', 'on');
-        set(handles.trainingPercentageSlider, 'Visible', 'on');
-        set(handles.validationPercentageSlider, 'Visible', 'on');
-        set(handles.validationPercentageText, 'Visible', 'on');
-    else
-        % Hide second slider and text
-        set(handles.validationPercentageSlider, 'Visible', 'off');
-        set(handles.validationPercentageText, 'Visible', 'off');
-        if handles.useInputFileForTrainAndClassification == 0
-            set(handles.trainPercentageText, 'Visible', 'off');
-            set(handles.trainingPercentageSlider, 'Visible', 'off');
-            
-            handles.trainFilePath = '';
-            % FIXME: RESET TRAIN FILE IN THE TRAINING TAB
-        end
-    end
     
     % Update handles structure
     guidata(hObject, handles);
@@ -541,7 +502,7 @@ function featureReductionListBox_CreateFcn(hObject, ~, ~)
 
     
 % --- Executes when selected object is changed in classifierButtonGroup.
-function classifierButtonGroup_SelectionChangedFcn(hObject, eventdata, handles)
+function classifierButtonGroup_SelectionChangedFcn(hObject, ~, handles)
 % hObject    handle to the selected object in classifierButtonGroup 
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -549,13 +510,178 @@ function classifierButtonGroup_SelectionChangedFcn(hObject, eventdata, handles)
     selectedObject = get(handles.classifierButtonGroup, 'SelectedObject');
     selectedObjectString = get(selectedObject, 'String');
     
-    switch selectedObjectString
-        case 'SVM'
+    if strcmp(selectedObjectString, 'SVM') == 1
             handles.classifier = 'svm';
-        case 'LIBSVM'
+            % Hide classifier parameter
+            set(handles.classifierParameterText, 'Visible', 'off');
+            set(handles.classifierParameterEdit, 'Visible', 'off');
+    elseif strcmp(selectedObjectString, 'LIBSVM') == 1
             handles.classifier = 'libsvm';
+            % Hide classifier parameter
+            set(handles.classifierParameterText, 'Visible', 'off');
+            set(handles.classifierParameterEdit, 'Visible', 'off');
+    elseif strcmp(selectedObjectString, 'KNN') == 1
+            handles.classifier = 'knn';
+            % Show classifier parameter
+            set(handles.classifierParameterText, 'Visible', 'on');
+            set(handles.classifierParameterEdit, 'Visible', 'on');
+    elseif strcmp(selectedObjectString, 'Naive Bayes')
+            handles.classifier = 'naiveBayes';
+            % Hide classifier parameter
+            set(handles.classifierParameterText, 'Visible', 'off');
+            set(handles.classifierParameterEdit, 'Visible', 'off');
+    end
+    
+    fprintf('O object e |||%s||| e deu %s\n', selectedObjectString, handles.classifier);
+    
+    % Update handles structure
+    guidata(hObject, handles);    
+
+
+% --- Executes on button press in useDefaultFileCheckbox.
+function useDefaultFileCheckbox_Callback(hObject, eventdata, handles)
+% hObject    handle to useDefaultFileCheckbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+    % Hint: get(hObject,'Value') returns toggle state of useDefaultFileCheckbox
+    handles.useDefaultFile = get(hObject,'Value');
+    if handles.useDefaultFile == 0
+        set(handles.inputFileText, 'Visible', 'on');
+        set(handles.browseFileButton, 'Visible', 'on');
+    else
+        set(handles.inputFileText, 'Visible', 'off');
+        set(handles.browseFileButton, 'Visible', 'off');
+        handles.inputFilePath = handles.defaultFilePath; %Default file
+    end
+    
+    % Update handles structure
+    guidata(hObject, handles);
+
+
+% --- Executes on button press in selectDifferentdataSetClassification.
+function selectDifferentdataSetClassification_Callback(hObject, ~, handles)
+% hObject    handle to selectDifferentdataSetClassification (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+    % Hint: get(hObject,'Value') returns toggle state of selectDifferentdataSetClassification
+    handles.useDifferentDatasetForClassification = get(hObject, 'Value');
+    if handles.useDifferentDatasetForClassification == 1
+        set(handles.selectFileForValidationPanel, 'Visible', 'on');
+        set(handles.usePreviousFileForTrainingAndValidationCheckbox, 'Value', 0.0);
+    else
+        set(handles.selectFileForValidationPanel, 'Visible', 'off');
+        set(handles.usePreviousFileForTrainingAndValidationCheckbox, 'Value', 1.0);
     end
 
+
+% --- Executes on button press in browseFileTrainButton.
+function browseFileTrainButton_Callback(hObject, ~, handles)
+% hObject    handle to browseFileTrainButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+    % Select the input file
+    [filename, pathname] = uigetfile({'*.mat','Binary MATLAB format file (*.mat)'},'Choose an Input File');
+    handles.trainFilePath = [pathname filename];
+    
+    % Update the filename in the handles structure
+    set(handles.browseFileTrainText, 'String', filename);
+    
+    % Update handles structure
+    guidata(hObject, handles);
+    
+
+
+% --- Executes on button press in usePreviousFileForTrainingAndValidationCheckbox.
+function usePreviousFileForTrainingAndValidationCheckbox_Callback(hObject, ~, handles)
+% hObject    handle to usePreviousFileForTrainingAndValidationCheckbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+    % Hint: get(hObject,'Value') returns toggle state of usePreviousFileForTrainingAndValidationCheckbox
+    handles.useSameFileForTrainingAndValidation = get(hObject, 'Value');
+    if handles.useSameFileForTrainingAndValidation == 1
+       % Hide file selection panel
+       set(handles.selectFileForValidationPanel, 'Visible', 'off');
+       set(handles.selectDifferentdataSetClassification, 'Value', 0.0);
+    else
+       % Show file selection panel
+       set(handles.selectFileForValidationPanel, 'Visible', 'on');
+       set(handles.selectDifferentdataSetClassification, 'Value', 1.0);
+    end
+
+    % Update handles structure
+    guidata(hObject, handles);
+    
+
+
+% --- Executes on button press in undersampleTrainingDataCheckbox.
+function undersampleTrainingDataCheckbox_Callback(hObject, ~, handles)
+% hObject    handle to undersampleTrainingDataCheckbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+    % Hint: get(hObject,'Value') returns toggle state of undersampleTrainingDataCheckbox
+    if get(hObject, 'Value') == 1
+        handles.balanceTrainingData = 'undersample';
+        set(handles.oversampleTrainingDataCheckbox, 'Value', 0.0);
+    else
+        handles.balanceTrainingData = 'oversample';
+        set(handles.oversampleTrainingDataCheckbox, 'Value', 1.0);
+    end
+    
+    % Update handles structure
+    guidata(hObject, handles)
+
+
+% --- Executes on button press in oversampleTrainingDataCheckbox.
+function oversampleTrainingDataCheckbox_Callback(hObject, ~, handles)
+% hObject    handle to oversampleTrainingDataCheckbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+    % Hint: get(hObject,'Value') returns toggle state of oversampleTrainingDataCheckbox
+    if get(hObject, 'Value') == 1
+        handles.balanceTrainingData = 'oversample';
+        set(handles.undersampleTrainingDataCheckbox, 'Value', 0.0);
+    else
+        handles.balanceTrainingData = 'undersample';
+        set(handles.undersampleTrainingDataCheckbox, 'Value', 1.0);
+    end
+    
+    % Update handles structure
+    guidata(hObject, handles)
+    
+    
+% --- Executes on button press in oversampleTrainingDataCheckbox.
+function svmRadioButton_Callback(~, ~, ~)
+% hObject    handle to oversampleTrainingDataCheckbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in oversampleTrainingDataCheckbox.
+function libsvmRadioButton_Callback(~, ~, ~)
+% hObject    handle to oversampleTrainingDataCheckbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in oversampleTrainingDataCheckbox.
+function knnRadioButton_Callback(~, ~, ~)
+% hObject    handle to oversampleTrainingDataCheckbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in oversampleTrainingDataCheckbox.
+function naiveBayesRadionButton_Callback(~, ~, ~)
+% hObject    handle to oversampleTrainingDataCheckbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+    
 % --- Executes on button press in runButon.
 function runButon_Callback(hObject, eventdata, handles)
 % hObject    handle to runButon (see GCBO)
@@ -575,13 +701,6 @@ function runButon_Callback(hObject, eventdata, handles)
     % features
     
     % FIXME: Check for training data and validation
-    if handles.useInputFileForTrainAndClassification == 1 && handles.useInputFileForTrainClassificationAndValidation == 1
-        % Check if the sum of the two percentages is smaller than 100
-        if handles.percentageTraining + handles.percentageValidation > 100
-            msgbox({'Training and Validation Percentages exceed limit! Please specify a training and validation percentage such that Train+Validation <= 100!'}, 'Invalid Train and Validation Percentage', 'error');
-            return ;
-        end
-    end
     
     % FIXME: Check for Feature Selection
     
@@ -590,5 +709,28 @@ function runButon_Callback(hObject, eventdata, handles)
     % FIXME: Check for Classifier
     if strcmp(handles.classifier, '')
         msgbox({'No Classifier Selected! Please select a valid Classifier!'}, 'Invalid Classifier', 'error');
+    % FIXME: Confirm valid option and parameter, in case such applies
+    % get(handles.classifierParameterEdit, 'String') to get the parameter
     end
-    
+
+
+function classifierParameterEdit_Callback(~, ~, ~)
+% hObject    handle to classifierParameterEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+    % Hints: get(hObject,'String') returns contents of classifierParameterEdit as text
+    %        str2double(get(hObject,'String')) returns contents of classifierParameterEdit as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function classifierParameterEdit_CreateFcn(hObject, ~, ~)
+% hObject    handle to classifierParameterEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+    % Hint: edit controls usually have a white background on Windows.
+    %       See ISPC and COMPUTER.
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
