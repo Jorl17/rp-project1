@@ -19,7 +19,7 @@ function [ predicted_label, accuracy, decision_values ] = classify_libsvm( svm_m
     end
     %testing_label_vector is going to be used to compute the accuracy of
     %the prediction
-    [predicted_label, accuracy, decision_values] = libsvmpredict(testing_label_vector, data, svm_model);
+    [predicted_label, accuracy, decision_values] = libsvmpredict(testing_label_vector, data', svm_model);
     accuracy = accuracy(1);
 end
 
