@@ -5,6 +5,7 @@ function [ data ] = feature_extraction(data, method, target_number_of_features, 
     elseif strcmp(method, 'lda')
         m = lda(data, target_number_of_features);
         data = linproj(data, m);
+        data.X = real(data.X);
     elseif strcmp(method, 'kpca')
         %Note: KPCA just blows up my memory. Greedy KPCA too.
         %see help kernel for more kernel types (default was linear)
