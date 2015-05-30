@@ -1,12 +1,11 @@
-function [ SVMStruct ] = train_svm( x_data, y_data )
+function [ SVMStruct ] = train_svm( sprt_data )
 %TRAIN_SVM Trains a MATLAB implemented SVM Classifier with a given set of
 %taining data and labels
-%   Receives the training data in the arrays "x_data" and "y_data" and
-%   trains a MATLAB SVM.
-%   x_data is a m-by-n matrix, where n is the number of features,
+%   Receives the training data in the sprt format and trains a MATLAB SVM.
+%   sprt_data.X is a m-by-n matrix, where n is the number of features,
 %   containing in each row the feature values for the given training
 %   instance.
-%   y_data is a m-by-1 matrix, containing the classification/label of each
+%   sprt_data.y is a m-by-1 matrix, containing the classification/label of each
 %   training instance.
 %   This method returns a MATLAB SVMStruct object, containing the trained
 %   classifier.
@@ -16,6 +15,6 @@ function [ SVMStruct ] = train_svm( x_data, y_data )
     % situation, since we have two classes...
     % "Default: 'linear' for two-class learning and 'gaussian' (or 'rbf')
     % for one-class learning" taken from MATLAB help
-    SVMStruct = fitcsvm(x_data', double(y_data), 'KernelFunction', 'linear');
-    %SVMStruct = fitcsvm(x_data', double(y_data), 'KernelFunction', 'RBF');
+    SVMStruct = fitcsvm(sprt_data.X', double(sprt_data.y), 'KernelFunction', 'linear');
+    %SVMStruct = fitcsvm(sprt_data.X', double(sprt_data.y), 'KernelFunction', 'RBF');
 end
