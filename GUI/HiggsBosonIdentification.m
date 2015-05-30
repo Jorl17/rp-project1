@@ -668,7 +668,7 @@ function resultsTable_CreateFcn(hObject, ~, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
-    set(hObject, 'Data', cell(2));
+    set(hObject, 'Data', -1*ones(2));
     set(hObject, 'RowName', {'Predicted correct', 'Predicted Incorrect'}, 'ColumnName', {'Classified Correct', 'Classified Incorrect'});
     
     
