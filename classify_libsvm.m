@@ -2,7 +2,7 @@ function [ predicted_label, accuracy, decision_values ] = classify_libsvm( svm_m
 %CLASSIFY_LIBSVM Classifies a given data set using a trained LIBSVM
 %implementation
 %   Receives the trained LIBSVM model in the first parameter, "svm_model".
-%   The training data is stored in the variable "data", a m-by-n matrix
+%   The training data is stored in the variable "data.X", a m-by-n matrix
 %   where n is the number of features of the classification instances and
 %   m is the number of classification instances.
 %   Additionally there is an opcional parameter containing the true
@@ -15,11 +15,11 @@ function [ predicted_label, accuracy, decision_values ] = classify_libsvm( svm_m
     if (iscell(varargin) && ~isempty(varargin))
         testing_label_vector = double(cell2mat(varargin(1)));
     else
-        testing_label_vector = zeros(size(data,1), 1); 
+        testing_label_vector = zeros(size(data.X,1), 1); 
     end
     %testing_label_vector is going to be used to compute the accuracy of
     %the prediction
-    [predicted_label, accuracy, decision_values] = libsvmpredict(testing_label_vector, data', svm_model);
+    [predicted_label, accuracy, decision_values] = libsvmpredict(testing_label_vector, data.X', svm_model);
     accuracy = accuracy(1);
 end
 
