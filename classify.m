@@ -10,7 +10,7 @@ function labels = classify(trained_model, method, data)
         sprt_data_processed = convert_to_sprt_data(data);
         sprt_data_processed = feature_extraction_from_model(sprt_data_processed, trained_model.feature_extraction_model);
         sprt_data_processed = select_indexes(sprt_data_processed, model.selected_features);
-    elseif
+    else
         sprt_data_processed = data;
     end
     
