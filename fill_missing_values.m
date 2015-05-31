@@ -1,4 +1,4 @@
-function [ outdata ] = fill_missing_values( indata, technique,varargin)
+function [ outdata ] = fill_missing_values( indata, technique, varargin)
     if strcmp(technique,'discard')
         outdata = fill_missing_values_discard(indata);        
     elseif strcmp(technique,'mean')
