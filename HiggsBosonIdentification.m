@@ -61,7 +61,7 @@ handles.output = hObject;
 setVisibility(handles, 1);
 
 handles.useDefaultFile = 1;
-handles.defaultFilePath = 'dataset\higgs_data.mat';
+handles.defaultFilePath = 'dataset/higgs_data.mat';
 handles.inputFilePath = handles.defaultFilePath; %Default file
 
 handles.balanceTrainingData = 'undersample';
@@ -322,7 +322,7 @@ function fillMissingValuesListBox_Callback(hObject, ~, handles)
     % Hints: contents = cellstr(get(hObject,'String')) returns fillMissingValuesListBox contents as cell array
     %        contents{get(hObject,'Value')} returns selected item from fillMissingValuesListBox
     contents = cellstr(get(hObject,'String'));
-    handles.fillMissingValuesMethod = contents{get(hObject,'Value')};
+    handles.fillMissingValuesMethod = strtrim(contents{get(hObject,'Value')});
     
     if strcmp(handles.fillMissingValuesMethod, 'KNN')
         % Show
@@ -434,25 +434,33 @@ function featureSelectionListBox_Callback(hObject, ~, handles)
     % Hints: contents = cellstr(get(hObject,'String')) returns featureSelectionListBox contents as cell array
     %        contents{get(hObject,'Value')} returns selected item from featureSelectionListBox
     contents = cellstr(get(hObject,'String'));
-    value = contents{get(hObject,'Value')};
+    value = strtrim(contents{get(hObject,'Value')});
     
-    switch value
-        case 'Fisher'
-            handles.featureSelectionMethod = 'fisher';
-        case 'KruskalWallis'
-            handles.featureSelectionMethod = 'fskruskalwallis';
-        case 'Area Under Curve'
-            handles.featureSelectionMethod = 'auc';
-        case 'MRMR Additive'
-            handles.featureSelectionMethod = 'mrmra';
-        case 'MRMR Multiplicative'
-            handles.featureSelectionMethod = 'mrmrm';
-        case 'Sequential FS Forward'
-            handles.featureSelectionMethod = 'sequentialFSForward';
-        case 'Sequential FS Backward'
-            handles.featureSelectionMethod = 'sequentialFSBackward';
-        otherwise
-            handles.featureSelectionMethod = 'corrcoef';
+    %disp(value)
+    if strcmp(value, 'Fisher')
+        %disp('Fisher')
+        handles.featureSelectionMethod = 'fisher';
+    elseif strcmp(value,  'KruskalWallis')
+        %disp('KruskalWallis')
+        handles.featureSelectionMethod = 'fskruskalwallis';
+    elseif strcmp(value,  'Area Under Curve')
+        %disp('Area Under Curve')
+        handles.featureSelectionMethod = 'auc';
+    elseif strcmp(value,  'MRMR Additive')
+        %disp('MRMR Additive')
+        handles.featureSelectionMethod = 'mrmra';
+    elseif strcmp(value,  'MRMR Multiplicative')
+        %disp('MRMR Multiplicative')
+        handles.featureSelectionMethod = 'mrmrm';
+    elseif strcmp(value,  'Sequential FS Forward')
+        %disp('Sequential FS Forward')
+        handles.featureSelectionMethod = 'sequentialFSForward';
+    elseif strcmp(value,  'Sequential FS Backward')
+        %disp('Sequential FS Backward')
+        handles.featureSelectionMethod = 'sequentialFSBackward';
+    else
+        %disp('corrcoef')
+        handles.featureSelectionMethod = 'corrcoef';
     end
     
     % Update handles structure
@@ -506,7 +514,7 @@ function featureReductionListBox_Callback(hObject, ~, handles)
     % Hints: contents = cellstr(get(hObject,'String')) returns featureReductionListBox contents as cell array
     %        contents{get(hObject,'Value')} returns selected item from featureReductionListBox
     contents = cellstr(get(hObject,'String'));
-    value = contents{get(hObject,'Value')};
+    value = strtrim(contents{get(hObject,'Value')});
     
     switch value
         case 'PCA'
@@ -955,14 +963,14 @@ function runButon_Callback(hObject, ~, handles)
     elseif handles.useSameFileForTrainingAndValidation == 1
         % load dataset and pre-process the data
         [~, higgs_data] = load_dataset(handles.inputFilePath);
-        [selected_features, feature_extraction_module, sprt_data_balanced ] = preprocess(higgs_data, lower(handles.fillMissingValuesMethod), handles.featureSelectionMethod, handles.featureReductionMethod, handles.targetNumberFeaturesFeatureSelection, handles.targetNumberFeaturesFeatureReduction, handles.balanceTrainingData, handles.fillMissingValuesKNNParameter);
+        [selected_features, feature_extraction_module, sprt_data_balanced ] = preprocess(higgs_data, lower(handles.fillMissingValuesMethod), lower(handles.featureSelectionMethod), lower(handles.featureReductionMethod), handles.targetNumberFeaturesFeatureSelection, handles.targetNumberFeaturesFeatureReduction, handles.balanceTrainingData, handles.fillMissingValuesKNNParameter);
         [sprt_train, sprt_test, ~] = split_training_test_validate(sprt_data_balanced, handles.percentageTraining/100.0, handles.percentageTest/100.0, 0);
         model = train(sprt_train, handles.classifier, handles.classifierParameter);
         handles.trained_model = build_trained_model(model, selected_features, feature_extraction_module, lower(handles.fillMissingValuesMethod), handles.classifierParameter);
         [labels, ~] = classify(handles.trained_model, 'Capitao_Iglo', sprt_test);
     elseif handles.selectDifferentdataSetClassification == 1
         [~, higgs_data] = load_dataset(handles.inputFilePath);
-        [selected_features, feature_extraction_module, sprt_data_balanced ] = preprocess(higgs_data, lower(handles.fillMissingValuesMethod), handles.featureSelectionMethod, handles.featureReductionMethod, handles.targetNumberFeaturesFeatureSelection, handles.targetNumberFeaturesFeatureReduction, handles.balanceTrainingData, handles.fillMissingValuesKNNParameter);
+        [selected_features, feature_extraction_module, sprt_data_balanced ] = preprocess(higgs_data, lower(handles.fillMissingValuesMethod), lower(handles.featureSelectionMethod), lower(handles.featureReductionMethod), handles.targetNumberFeaturesFeatureSelection, handles.targetNumberFeaturesFeatureReduction, handles.balanceTrainingData, handles.fillMissingValuesKNNParameter);
         [sprt_train, ~, ~] = split_training_test_validate(sprt_data_balanced, handles.percentageTraining/100.0, handles.percentageTest/100.0, 0);
         model = train(sprt_train, handles.classifier, handles.classifierParameter);
         handles.trained_model = build_trained_model(model, selected_features, feature_extraction_module, lower(handles.fillMissingValuesMethod), handles.classifierParameter);

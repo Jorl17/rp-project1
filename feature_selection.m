@@ -1,4 +1,5 @@
 function [ data, indexes ] = feature_selection(data, method, target_number_of_features, varargin)
+    fprintf('''%s''\n', method);
     if strcmp(method, 'fisher')
         %Fisher Method (Filter)
         [data, indexes] = fisher(data, target_number_of_features);
@@ -17,10 +18,10 @@ function [ data, indexes ] = feature_selection(data, method, target_number_of_fe
     elseif strcmp(method, 'mrmrm')
         %Maximize Relevance Minimize Redundancy Multiplicative (Filter)
         [data, indexes] = mrmr_multiplicative(data, target_number_of_features);
-    elseif strcmp(method, 'sequentialFsForward')
+    elseif strcmp(method, 'sequentialfsforward')
         %Wrapper Selection - Forward
         [data, indexes] = sequentialFs(data, target_number_of_features, 1);
-    elseif strcmp(method, 'sequentialFsBackward')
+    elseif strcmp(method, 'sequentialfsbackward')
         %Wrapper Selection - Backward
         [data, indexes] = sequentialFs(data, target_number_of_features, 0);
     elseif strcmp(method, 'corrcoef')
