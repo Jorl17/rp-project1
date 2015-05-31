@@ -8,10 +8,12 @@ function model = train(train_sprt_data, method, varargin)
     elseif strcmp(method, 'fitrtree')
         model.m = train_fitrtree(train_sprt_data);
     elseif strcmp(method, 'libsvm')
-        model.m = train_libsvm(train_sprt_data);
+        method = args_with_default_values(varargin, 0);%To be linear
+        model.m = train_libsvm(train_sprt_data, method);
     elseif strcmp(method, 'naive_bayes')
         model.m = train_naive_bayes(train_sprt_data);
     elseif strcmp(method, 'svm')
-        model.m = train_svm(train_sprt_data);
+        method = args_with_default_values(varargin, 0);%To be linear
+        model.m = train_svm(train_sprt_data, method);
     end
 end

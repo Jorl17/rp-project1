@@ -1,4 +1,4 @@
-function [ svm_model ] = train_libsvm( sprt_data )
+function [ svm_model ] = train_libsvm( sprt_data, method )
 %TRAIN_LIBSVM Trains a LIBSVM classifier with a given set of taining data
 %and labels
 %   Receives the training data in the sprt format and trains a MATLAB SVM.
@@ -15,5 +15,5 @@ function [ svm_model ] = train_libsvm( sprt_data )
     % Might be interesting to change the type of kernel function? (default
     % is the Radial Basis Function) Apart from this I don't think any other
     % parameter is worth changing...
-    svm_model = libsvmtrain(sprt_data.y, sprt_data.X');
+    svm_model = libsvmtrain(sprt_data.y, sprt_data.X', ['-t', ' ', num2str(method)]);
 end

@@ -22,7 +22,7 @@ function varargout = HiggsBosonIdentification(varargin)
 
 % Edit the above text to modify the response to help HiggsBosonIdentification
 
-% Last Modified by GUIDE v2.5 31-May-2015 02:47:04
+% Last Modified by GUIDE v2.5 31-May-2015 15:27:20
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -556,13 +556,13 @@ function classifierButtonGroup_SelectionChangedFcn(hObject, ~, handles)
     if strcmp(selectedObjectString, 'SVM') == 1
             handles.classifier = 'svm';
             % Hide classifier parameter
-            set(handles.classifierParameterText, 'Visible', 'off');
-            set(handles.classifierParameterEdit, 'Visible', 'off');
+            set(handles.classifierParameterText, 'Visible', 'on');
+            set(handles.classifierParameterEdit, 'Visible', 'on');
     elseif strcmp(selectedObjectString, 'LIBSVM') == 1
             handles.classifier = 'libsvm';
             % Hide classifier parameter
-            set(handles.classifierParameterText, 'Visible', 'off');
-            set(handles.classifierParameterEdit, 'Visible', 'off');
+            set(handles.classifierParameterText, 'Visible', 'on');
+            set(handles.classifierParameterEdit, 'Visible', 'on');
     elseif strcmp(selectedObjectString, 'KNN') == 1
             handles.classifier = 'knn';
             % Show classifier parameter
