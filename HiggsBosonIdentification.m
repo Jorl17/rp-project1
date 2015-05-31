@@ -956,25 +956,46 @@ function runButon_Callback(hObject, ~, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+    addpath('libsvm-3.20/matlab');
+    addpath('mi');
+
     if handles.loadClassifier == 1
+        fprintf('Loading trained model...\n');
         trained_model = load_trained_model(handles.classifierFilePath);
+        fprintf('Loading dataset...\n');
         [~, higgs_data] = load_dataset(handles.trainFilePath);
+        
+        fprintf('Classifying...\n');
         [labels, sprt_test] = classify(trained_model, 'preprocess', higgs_data);
     elseif handles.useSameFileForTrainingAndValidation == 1
-        % load dataset and pre-process the data
+        % load dataset and pre-process the data        
+        fprintf('Loading dataset...\n');
         [~, higgs_data] = load_dataset(handles.inputFilePath);
+        fprintf('Preprocessing dataset...\n');
         [selected_features, feature_extraction_module, sprt_data_balanced ] = preprocess(higgs_data, lower(handles.fillMissingValuesMethod), lower(handles.featureSelectionMethod), lower(handles.featureReductionMethod), handles.targetNumberFeaturesFeatureSelection, handles.targetNumberFeaturesFeatureReduction, handles.balanceTrainingData, handles.fillMissingValuesKNNParameter);
+        fprintf('Splitting dataset...\n');
         [sprt_train, sprt_test, ~] = split_training_test_validate(sprt_data_balanced, handles.percentageTraining/100.0, handles.percentageTest/100.0, 0);
+        fprintf('Training classifier...\n');
         model = train(sprt_train, handles.classifier, handles.classifierParameter);
+        fprintf('Building the training model...\n');
         handles.trained_model = build_trained_model(model, selected_features, feature_extraction_module, lower(handles.fillMissingValuesMethod), handles.classifierParameter);
+        fprintf('Classifying...\n');
         [labels, ~] = classify(handles.trained_model, 'Capitao_Iglo', sprt_test);
     elseif handles.selectDifferentdataSetClassification == 1
+        fprintf('Loading dataset...\n');
         [~, higgs_data] = load_dataset(handles.inputFilePath);
+        fprintf('Preprocessing dataset...\n');
         [selected_features, feature_extraction_module, sprt_data_balanced ] = preprocess(higgs_data, lower(handles.fillMissingValuesMethod), lower(handles.featureSelectionMethod), lower(handles.featureReductionMethod), handles.targetNumberFeaturesFeatureSelection, handles.targetNumberFeaturesFeatureReduction, handles.balanceTrainingData, handles.fillMissingValuesKNNParameter);
-        [sprt_train, ~, ~] = split_training_test_validate(sprt_data_balanced, handles.percentageTraining/100.0, handles.percentageTest/100.0, 0);
+        %printf('Splitting dataset...\n');
+        %[sprt_train, ~, ~] = split_training_test_validate(sprt_data_balanced, handles.percentageTraining/100.0, handles.percentageTest/100.0, 0);
+        sprt_train = sprt_data_balanced;
+        fprintf('Training classifier...\n');
         model = train(sprt_train, handles.classifier, handles.classifierParameter);
+        fprintf('Building the training model...\n');
         handles.trained_model = build_trained_model(model, selected_features, feature_extraction_module, lower(handles.fillMissingValuesMethod), handles.classifierParameter);
+        fprintf('Loading dataset to be classified...\n');
         [~, higgs_data_test] = load_dataset(handles.trainFilePath);
+        fprintf('Classifying...\n');
         [labels, sprt_test] = classify(handles.trained_model, 'preprocess', higgs_data_test);
     else
         msgbox({'Invalid Parameters Specified!'}, 'Invalid Parameters', 'error');
@@ -982,7 +1003,10 @@ function runButon_Callback(hObject, ~, handles)
     end
     
     [FP, FN, TP, TN, accuracy, sensitivity, specificity, F1] = classifier_performance(labels, sprt_test.y);
-    fprintf('A accuracy e %f\n', accuracy);
+    fprintf('Accuracy: %f\n', accuracy);
+    fprintf('Sensitivity: %f\n', sensitivity);
+    fprintf('Specificity: %f\n', specificity);
+    fprintf('FP: %f, FN: %f\n', FP, FN);
     
     % Update the results tables
     set(handles.resultsTable, 'Data', [TP, FP;FN, TN]);

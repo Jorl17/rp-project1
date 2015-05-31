@@ -1,5 +1,6 @@
 %Add libsvm to Matlab's path
 addpath('libsvm-3.20/matlab');
+addpath('mi');
 
 [sprt_data_original, sprt_data_undersample, sprt_train, sprt_test] = prepare_dataset();
 
