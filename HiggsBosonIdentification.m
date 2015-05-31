@@ -22,7 +22,7 @@ function varargout = HiggsBosonIdentification(varargin)
 
 % Edit the above text to modify the response to help HiggsBosonIdentification
 
-% Last Modified by GUIDE v2.5 31-May-2015 15:27:20
+% Last Modified by GUIDE v2.5 31-May-2015 15:38:08
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -974,7 +974,8 @@ function runButon_Callback(hObject, ~, handles)
         fprintf('Classifying...\n');
         [labels, sprt_test] = classify(trained_model, 'preprocess', higgs_data);
     elseif handles.useSameFileForTrainingAndValidation == 1
-        % load dataset and pre-process the data        
+        % load dataset and pre-process the data 
+        handles.classifierParameter = str2num(get(handles.classifierParameterEdit,'String'));
         fprintf('[1]Loading dataset...\n');
         [~, higgs_data] = load_dataset(handles.inputFilePath);
         fprintf('Preprocessing dataset...\n');
@@ -988,6 +989,7 @@ function runButon_Callback(hObject, ~, handles)
         fprintf('Classifying...\n');
         [labels, ~] = classify(handles.trained_model, 'Capitao_Iglo', sprt_test);
     elseif handles.selectDifferentdataSetClassification == 1
+        handles.classifierParameter = str2num(get(handles.classifierParameterEdit,'String'));
         fprintf('Loading dataset...\n');
         [~, higgs_data] = load_dataset(handles.inputFilePath);
         fprintf('Preprocessing dataset...\n');
@@ -1025,3 +1027,33 @@ function runButon_Callback(hObject, ~, handles)
     
     % Update handles structure
     guidata(hObject, handles);
+
+
+% --- Executes when classifierButtonGroup is resized.
+function classifierButtonGroup_ButtonDownFcn(hObject, eventdata, handles)
+% hObject    handle to classifierButtonGroup (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+    handles.classifierParameter = str2num(get(handles.classifierParameterEdit,'String'));
+    
+    % Update handles structure
+    guidata(hObject, handles);
+    
+ % --- Executes when classifierButtonGroup is resized.
+function classifierButtonGroup_SizeChangedFcn(hObject, eventdata, handles)
+% hObject    handle to classifierButtonGroup (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- If Enable == 'on', executes on mouse press in 5 pixel border.
+% --- Otherwise, executes on mouse press in 5 pixel border or over classifierParameterEdit.
+function classifierParameterEdit_ButtonDownFcn(hObject, eventdata, handles)
+% hObject    handle to classifierParameterEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+    handles.classifierParameter = str2num(get(hObject,'String'));
+    
+    % Update handles structure
+    guidata(hObject, handles);
+    

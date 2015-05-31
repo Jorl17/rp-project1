@@ -15,10 +15,11 @@ function [ SVMStruct ] = train_svm( sprt_data, method )
     % situation, since we have two classes...
     % "Default: 'linear' for two-class learning and 'gaussian' (or 'rbf')
     % for one-class learning" taken from MATLAB help
-    if method == 1
-        SVMStruct = fitcsvm(sprt_data.X', double(sprt_data.y), 'KernelFunction', 'RBF');
+    if method == 0
+    	SVMStruct = fitcsvm(sprt_data.X', double(sprt_data.y), 'KernelFunction', 'linear');
+    elseif method == 1
+        SVMStruct = fitcsvm(sprt_data.X', double(sprt_data.y), 'KernelFunction', 'polynomial');
     else
-        SVMStruct = fitcsvm(sprt_data.X', double(sprt_data.y), 'KernelFunction', 'linear');
+    	SVMStruct = fitcsvm(sprt_data.X', double(sprt_data.y), 'KernelFunction', 'RBF');
     end
-    %SVMStruct = fitcsvm(sprt_data.X', double(sprt_data.y), 'KernelFunction', 'RBF');
 end
