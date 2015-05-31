@@ -1,4 +1,4 @@
-function labels = classify(trained_model, method, data)
+function [ labels, sprt_data_processed ] = classify(trained_model, method, data)
     
     if strcmp(method,'preprocess')
         if strcmp(trained_model.missing_value_method, 'knn')
@@ -9,7 +9,7 @@ function labels = classify(trained_model, method, data)
 
         sprt_data_processed = convert_to_sprt_data(data);
         sprt_data_processed = feature_extraction_from_model(sprt_data_processed, trained_model.feature_extraction_model);
-        sprt_data_processed = select_indexes(sprt_data_processed, model.selected_features);
+        sprt_data_processed = select_indexes(sprt_data_processed, trained_model.selected_features);
     else
         sprt_data_processed = data;
     end

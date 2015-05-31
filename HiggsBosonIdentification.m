@@ -22,7 +22,7 @@ function varargout = HiggsBosonIdentification(varargin)
 
 % Edit the above text to modify the response to help HiggsBosonIdentification
 
-% Last Modified by GUIDE v2.5 31-May-2015 00:36:35
+% Last Modified by GUIDE v2.5 31-May-2015 02:47:04
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -61,10 +61,10 @@ handles.output = hObject;
 setVisibility(handles, 1);
 
 handles.useDefaultFile = 1;
-handles.defaultFilePath = 'E:\Universidade\Engenharia Informática\4º Ano\2º Semestre\RP\Projecto\rp-project1\dataset\higgs_data.m'; %FIXME: CHANGE THIS TO AVOID USING AN ABSOLUTE PATH!!!
+handles.defaultFilePath = 'dataset\higgs_data.mat';
 handles.inputFilePath = handles.defaultFilePath; %Default file
 
-handles.balanceTrainingData = 'undersampling';
+handles.balanceTrainingData = 'undersample';
 
 % Set inputFile default text
 set(handles.inputFileText, 'String', 'No Input File Selected!');
@@ -93,28 +93,28 @@ set(handles.knnParameterFillMissingValuesEdit, 'Visible', 'off');
 handles.percentageTraining = 100;
 handles.percentageTest = 0;
 set(handles.trainPercentageText, 'Visible', 'on');
-set(handles.trainPercentageText, 'String', 'Train: 100%');
-set(handles.testPercentageText, 'String', 'Test: 0%');
+set(handles.trainPercentageText, 'String', 'Train: 70%');
+set(handles.testPercentageText, 'String', 'Test: 30%');
+handles.percentageTraining = 70;
+handles.percentageTest = 30;
 set(handles.trainingPercentageSlider, 'Visible', 'on');
 set(handles.fillMissingValuesCheckbox, 'Visible', 'on');
-set(handles.fillMissingValuesListBox, 'Visible', 'off');
+set(handles.fillMissingValuesListBox, 'Visible', 'on');
 handles.fillMissingValues = 0;
-handles.fillMissingValuesMethod = char();
+handles.fillMissingValuesMethod = 'Discard';
 handles.fillMissingValuesKNNParameter = 5;
 handles.performFeatureReduction = 0;
-handles.targetNumberFeaturesFeatureReduction = 15;
-handles.targetNumberFeaturesFeatureSelection = 7;
+handles.targetNumberFeaturesFeatureReduction = 5;
+handles.targetNumberFeaturesFeatureSelection = 2;
 handles.featureSelection = 0;
-set(handles.featureSelectionListBox, 'Visible', 'off');
-handles.featureSelectionMethod = char();
+set(handles.featureSelectionListBox, 'Visible', 'on');
+handles.featureSelectionMethod = 'fskruskalwallis';
 handles.featureReduction = 0;
-set(handles.featureReductionListBox, 'Visible', 'off');
-handles.featureReductionMethod = char();
+set(handles.featureReductionListBox, 'Visible', 'on');
+handles.featureReductionMethod = 'lda';
 handles.classifier = 'knn';
 handles.loadClassifier = 0;
 handles.classifierParameter = 40;
-
-set(handles.selectFileForClassiifcationPanel, 'Visible', 'off');
 
 set(handles.selectTrainAndValidationPercentagesPanel, 'Visible', 'on');
 
@@ -245,7 +245,7 @@ function trainingPercentageSlider_Callback(hObject, ~, handles)
     handles.percentageTest = int64(get(hObject, 'Value') * 100);
     % Update text and slider
     set(handles.trainPercentageText, 'String', strcat('Train: ', num2str(handles.percentageTraining), '%'));
-    set(handles.testPercentageText, 'String', strcat('Train: ', num2str(handles.percentageTest), '%'));
+    set(handles.testPercentageText, 'String', strcat('Test: ', num2str(handles.percentageTest), '%'));
     
     % Update handles structure
     guidata(hObject, handles);
@@ -498,7 +498,7 @@ function featureReductionCheckBox_Callback(hObject, ~, handles)
 
 
 % --- Executes on selection change in featureReductionListBox.
-function featureReductionListBox_Callback(hObject, eventdata, handles)
+function featureReductionListBox_Callback(hObject, ~, handles)
 % hObject    handle to featureReductionListBox (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -561,7 +561,7 @@ function classifierButtonGroup_SelectionChangedFcn(hObject, ~, handles)
             set(handles.classifierParameterText, 'Visible', 'on');
             set(handles.classifierParameterEdit, 'Visible', 'on');
     elseif strcmp(selectedObjectString, 'Naive Bayes')
-            handles.classifier = 'naiveBayes';
+            handles.classifier = 'naive_bayes';
             % Hide classifier parameter
             set(handles.classifierParameterText, 'Visible', 'off');
             set(handles.classifierParameterEdit, 'Visible', 'off');
@@ -666,8 +666,6 @@ function usePreviousFileForTrainingAndValidationCheckbox_Callback(hObject, ~, ha
        set(handles.selectDifferentdataSetClassification, 'Value', 0.0);
        set(handles.loadClassifierCheckbox, 'Value', 0.0);
        set(handles.classifierButtonGroup, 'Visible', 'on');
-       set(handles.selectFileForClassiifcationPanel, 'Visible', 'off');
-       set(handles.browseFileClasificationText, 'String', 'No Input File Selected!');
        set(handles.selectClassifierPanel, 'Visible', 'off');
        set(handles.browseClassifierText, 'String', 'No Input File Selected!');
        set(handles.selectTrainAndValidationPercentagesPanel, 'Visible', 'on');
@@ -692,9 +690,7 @@ function selectDifferentdataSetClassification_Callback(hObject, ~, handles)
         set(handles.selectFileForValidationPanel, 'Visible', 'on');
         set(handles.loadClassifierCheckbox, 'Value', 0.0);
         set(handles.classifierButtonGroup, 'Visible', 'on');
-        set(handles.selectFileForClassiifcationPanel, 'Visible', 'off');
         set(handles.browseClassifierText , 'String', 'no Input File Selected!');
-        set(handles.browseFileClasificationText, 'String', 'No Input File Selected!');
         set(handles.usePreviousFileForTrainingAndValidationCheckbox, 'Value', 0.0);
         set(handles.selectTrainAndValidationPercentagesPanel, 'Visible', 'off');
         set(handles.selectClassifierPanel, 'Visible', 'off');
@@ -721,16 +717,16 @@ function loadClassifierCheckbox_Callback(hObject, ~, handles)
         set(handles.selectDifferentdataSetClassification, 'Value', 0.0);
         set(handles.selectTrainAndValidationPercentagesPanel, 'Visible', 'off');
         set(handles.classifierButtonGroup, 'Visible', 'off');
-        set(handles.selectFileForValidationPanel, 'Visible', 'off');
+        set(handles.selectFileForValidationPanel, 'Visible', 'on');
         set(handles.browseFileTrainText, 'String', 'No Input File Selected!');
-        set(handles.selectFileForClassiifcationPanel, 'Visible', 'on');
         set(handles.selectClassifierPanel, 'Visible', 'on');
+        set(handles.browseClassifierText , 'String', 'No Input File Selected!');
     else
         % set(handles.classifierButtonGroup, 'Visible', 'on');
-        set(handles.selectFileForClassiifcationPanel, 'Visible', 'off');
+        set(handles.selectFileForValidationPanel, 'Visible', 'off');
+        set(handles.browseFileTrainText, 'String', 'No Input File Selected!');
         set(handles.selectClassifierPanel, 'Visible', 'off');
         set(handles.browseClassifierText , 'String', 'No Input File Selected!');
-        set(handles.browseFileClasificationText, 'String', 'No Input File Selected!');
     end
     
     % Update handles structure
@@ -784,7 +780,7 @@ function resultsTable_CreateFcn(hObject, ~, handles)
     set(hObject, 'RowName', {'Predicted correct', 'Predicted Incorrect'}, 'ColumnName', {'Real Correct', 'Real Incorrect'});
     
     % Update handles structure
-    guidata(hObject, handles)
+    guidata(hObject, handles);
     
     
 % --- Executes during object creation, after setting all properties.
@@ -797,7 +793,7 @@ function furtherResultsTable_CreateFcn(hObject, ~, handles)
     set(hObject, 'RowName', {'Accuracy', 'Sensitivity', 'Specificity', 'F-Measure'}, 'ColumnName', {'Value'});
     
     % Update handles structure
-    guidata(hObject, handles)
+    guidata(hObject, handles);
     
 % --- Executes on button press in oversampleTrainingDataCheckbox.
 function svmRadioButton_Callback(~, ~, ~)
@@ -843,14 +839,14 @@ function classificationTreeRadioButton_Callback(~, ~, ~)
 % Hint: get(hObject,'Value') returns toggle state of classificationTreeRadioButton
 
 
-function classifierParameterEdit_Callback(~, ~, ~)
+function classifierParameterEdit_Callback(hObject, ~, ~)
 % hObject    handle to classifierParameterEdit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
     % Hints: get(hObject,'String') returns contents of classifierParameterEdit as text
     %        str2double(get(hObject,'String')) returns contents of classifierParameterEdit as a double
-    handles.classifierParameter = str2double(get(hObject,'String'));
+    handles.classifierParameter = str2num(get(hObject,'String'));
 
 
 % --- Executes during object creation, after setting all properties.
@@ -864,51 +860,6 @@ function classifierParameterEdit_CreateFcn(hObject, ~, ~)
     if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
     end
-
-    
-% --- Executes on button press in runButon.
-function runButon_Callback(hObject, ~, handles)
-% hObject    handle to runButon (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-    %{
-    if utilizar classificador gaurdado
-        classiifier = load_classifier(Caminho para o classificador)
-
-    %}
-
-
-
-    
-    % Check for input file
-    if strcmp(handles.inputFilePath, '')
-        msgbox({'No Input File Specified! Please specify an Input File!'}, 'Invalid Input File', 'error');
-        return ;
-    end
-    
-    % FIXME: Check for reduced number of features! (check if introduced
-    % number of features is smaller or equal to the dataset's number of
-    % features
-    
-    % FIXME: Check for training data and validation
-    
-    % FIXME: Check for Feature Selection
-    
-    % FIXME: Check for Feature Reduction
-    
-    % FIXME: Check for Classifier
-    if strcmp(handles.classifier, '')
-        msgbox({'No Classifier Selected! Please select a valid Classifier!'}, 'Invalid Classifier', 'error');
-    % FIXME: Confirm valid option and parameter, in case such applies
-    % get(handles.classifierParameterEdit, 'String') to get the parameter
-    end
-    
-    set(handles.saveClassifierButton, 'Visible', 'on');
-    
-    % Update handles structure
-    guidata(hObject, handles);
-
 
 
 function featureReductionTargetNumberFeaturesEdit_Callback(hObject, eventdata, handles)
@@ -942,7 +893,7 @@ function featureSelectionTargetNumberFeaturesEdit_Callback(hObject, eventdata, h
 
     % Hints: get(hObject,'String') returns contents of featureSelectionTargetNumberFeaturesEdit as text
     %        str2double(get(hObject,'String')) returns contents of featureSelectionTargetNumberFeaturesEdit as a double
-    handles.targetNumberFeaturesFeatureSelection = str2double(get(hObject,'String'));
+    handles.targetNumberFeaturesFeatureSelection = str2num(get(hObject,'String'));
 
 
 % --- Executes during object creation, after setting all properties.
@@ -957,15 +908,6 @@ function featureSelectionTargetNumberFeaturesEdit_CreateFcn(hObject, eventdata, 
         set(hObject,'BackgroundColor','white');
     end
 
-
-% --- Executes on button press in saveClassifierButton.
-function saveClassifierButton_Callback(hObject, eventdata, handles)
-% hObject    handle to saveClassifierButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-
 function knnParameterFillMissingValuesEdit_Callback(hObject, ~, handles)
 % hObject    handle to knnParameterFillMissingValuesEdit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -973,7 +915,7 @@ function knnParameterFillMissingValuesEdit_Callback(hObject, ~, handles)
 
     % Hints: get(hObject,'String') returns contents of knnParameterFillMissingValuesEdit as text
     %        str2double(get(hObject,'String')) returns contents of knnParameterFillMissingValuesEdit as a double
-    handles.fillMissingValuesKNNParameter = str2double(get(hObject,'String'));
+    handles.fillMissingValuesKNNParameter = str2num(get(hObject,'String'));
 
 
 % --- Executes during object creation, after setting all properties.
@@ -987,3 +929,61 @@ function knnParameterFillMissingValuesEdit_CreateFcn(hObject, ~, ~)
     if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
     end
+    
+    
+% --- Executes on button press in saveClassifierButton.
+function saveClassifierButton_Callback(hObject, eventdata, handles)
+% hObject    handle to saveClassifierButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+    [user_selected_file, user_selected_path] = uiputfile('*.mat','Save File as');
+    pathname = [user_selected_path user_selected_file];
+    save_trained_model(pathname, handles.trained_model);
+
+    
+% --- Executes on button press in runButon.
+function runButon_Callback(hObject, ~, handles)
+% hObject    handle to runButon (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+    if handles.loadClassifier == 1
+        trained_model = load_trained_model(handles.classifierFilePath);
+        [~, higgs_data] = load_dataset(handles.trainFilePath);
+        [labels, sprt_test] = classify(trained_model, 'preprocess', higgs_data);
+    elseif handles.useSameFileForTrainingAndValidation == 1
+        % load dataset and pre-process the data
+        [~, higgs_data] = load_dataset(handles.inputFilePath);
+        [selected_features, feature_extraction_module, sprt_data_balanced ] = preprocess(higgs_data, lower(handles.fillMissingValuesMethod), handles.featureSelectionMethod, handles.featureReductionMethod, handles.targetNumberFeaturesFeatureSelection, handles.targetNumberFeaturesFeatureReduction, handles.balanceTrainingData, handles.fillMissingValuesKNNParameter);
+        [sprt_train, sprt_test, ~] = split_training_test_validate(sprt_data_balanced, handles.percentageTraining/100.0, handles.percentageTest/100.0, 0);
+        model = train(sprt_train, handles.classifier, handles.classifierParameter);
+        handles.trained_model = build_trained_model(model, selected_features, feature_extraction_module, lower(handles.fillMissingValuesMethod), handles.classifierParameter);
+        [labels, ~] = classify(handles.trained_model, 'Capitao_Iglo', sprt_test);
+    elseif handles.selectDifferentdataSetClassification == 1
+        [~, higgs_data] = load_dataset(handles.inputFilePath);
+        [selected_features, feature_extraction_module, sprt_data_balanced ] = preprocess(higgs_data, lower(handles.fillMissingValuesMethod), handles.featureSelectionMethod, handles.featureReductionMethod, handles.targetNumberFeaturesFeatureSelection, handles.targetNumberFeaturesFeatureReduction, handles.balanceTrainingData, handles.fillMissingValuesKNNParameter);
+        [sprt_train, ~, ~] = split_training_test_validate(sprt_data_balanced, handles.percentageTraining/100.0, handles.percentageTest/100.0, 0);
+        model = train(sprt_train, handles.classifier, handles.classifierParameter);
+        handles.trained_model = build_trained_model(model, selected_features, feature_extraction_module, lower(handles.fillMissingValuesMethod), handles.classifierParameter);
+        [~, higgs_data_test] = load_dataset(handles.trainFilePath);
+        [labels, sprt_test] = classify(handles.trained_model, 'preprocess', higgs_data_test);
+    else
+        msgbox({'Invalid Parameters Specified!'}, 'Invalid Parameters', 'error');
+        return ;
+    end
+    
+    [FP, FN, TP, TN, accuracy, sensitivity, specificity, F1] = classifier_performance(labels, sprt_test.y);
+    fprintf('A accuracy e %f\n', accuracy);
+    
+    % Update the results tables
+    set(handles.resultsTable, 'Data', [TP, FP;FN, TN]);
+    set(handles.resultsTable, 'RowName', {'Predicted correct', 'Predicted Incorrect'}, 'ColumnName', {'Real Correct', 'Real Incorrect'});
+    
+    set(handles.furtherResultsTable, 'Data', [accuracy; sensitivity; specificity; F1]);
+    set(handles.furtherResultsTable, 'RowName', {'Accuracy', 'Sensitivity', 'Specificity', 'F-Measure'}, 'ColumnName', {'Value'});
+    
+    set(handles.saveClassifierButton, 'Visible', 'on');
+    
+    % Update handles structure
+    guidata(hObject, handles);
