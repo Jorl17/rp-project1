@@ -1,0 +1,1 @@
+This folder is empty because mail.dei.uc.pt does not allow for files larger than 5 MB
