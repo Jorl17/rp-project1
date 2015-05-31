@@ -1,7 +1,8 @@
 function model = train(train_sprt_data, method, varargin)
     model.type =  method;
-    if strcmp(method, 'knn')        
-        model.m = train_knn(train_sprt_data);
+    if strcmp(method, 'knn')   
+        [K] = args_with_default_values(varargin, 20);
+        model.m = train_knn(train_sprt_data,K);
     elseif strcmp(method, 'fitctree')
         model.m = train_fitctree(train_sprt_data);
     elseif strcmp(method, 'fitrtree')

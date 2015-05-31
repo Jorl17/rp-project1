@@ -1,15 +1,19 @@
-function labels = classify(trained_model, test_higgs_data)
+function labels = classify(trained_model, method, data)
     
-    if strcmp(trained_model.missing_value_method, 'knn')
-        test_higgs_data = fill_missing_values(test_higgs_data, trained_model.missing_value_method, trained_model.K);
-    else
-        test_higgs_data = fill_missing_values(test_higgs_data, trained_model.missing_value_method);
+    if strcmp(method,'preprocess')
+        if strcmp(trained_model.missing_value_method, 'knn')
+            data = fill_missing_values(data, trained_model.missing_value_method, trained_model.K);
+        else
+            data = fill_missing_values(data, trained_model.missing_value_method);
+        end
+
+        sprt_data_processed = convert_to_sprt_data(data);
+        sprt_data_processed = feature_extraction_from_model(sprt_data_processed, trained_model.feature_extraction_model);
+        sprt_data_processed = select_indexes(sprt_data_processed, model.selected_features);
+    elseif
+        sprt_data_processed = data;
     end
     
-    sprt_data_processed = convert_to_sprt_data(test_higgs_data);
-    sprt_data_processed = feature_extraction_from_model(sprt_data_processed, trained_model.feature_extraction_model);
-    sprt_data_processed = select_indexes(sprt_data_processed, model.selected_features);
-
     if strcmp(trained_model.type, 'knn')        
         labels = classify_knn(trained_model.m, sprt_data_processed);
     elseif strcmp(trained_model.type, 'fitctree')
