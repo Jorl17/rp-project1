@@ -1,4 +1,4 @@
-function [ predicted_label, accuracy, decision_values ] = classify_libsvm( svm_model, data, varargin )
+function [ predicted_label ] = classify_libsvm( svm_model, data, varargin )
 %CLASSIFY_LIBSVM Classifies a given data set using a trained LIBSVM
 %implementation
 %   Receives the trained LIBSVM model in the first parameter, "svm_model".
@@ -19,7 +19,6 @@ function [ predicted_label, accuracy, decision_values ] = classify_libsvm( svm_m
     end
     %testing_label_vector is going to be used to compute the accuracy of
     %the prediction
-    [predicted_label, accuracy, decision_values] = libsvmpredict(testing_label_vector, data.X', svm_model);
-    accuracy = accuracy(1);
+    [predicted_label, ~, ] = libsvmpredict(testing_label_vector, data.X', svm_model);
 end
 
