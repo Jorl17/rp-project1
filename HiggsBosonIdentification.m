@@ -671,6 +671,8 @@ function usePreviousFileForTrainingAndValidationCheckbox_Callback(hObject, ~, ha
     handles.useSameFileForTrainingAndValidation = get(hObject, 'Value');
     if handles.useSameFileForTrainingAndValidation == 1
        set(handles.selectFileForValidationPanel, 'Visible', 'off');
+       handles.loadClassifier = 0;
+       handles.useDifferentDatasetForClassification = 0;
        set(handles.selectDifferentdataSetClassification, 'Value', 0.0);
        set(handles.loadClassifierCheckbox, 'Value', 0.0);
        set(handles.classifierButtonGroup, 'Visible', 'on');
@@ -697,6 +699,8 @@ function selectDifferentdataSetClassification_Callback(hObject, ~, handles)
     if handles.useDifferentDatasetForClassification == 1
         set(handles.selectFileForValidationPanel, 'Visible', 'on');
         set(handles.loadClassifierCheckbox, 'Value', 0.0);
+        handles.loadClassifier = 0;
+        handles.useSameFileForTrainingAndValidation = 0;
         set(handles.classifierButtonGroup, 'Visible', 'on');
         set(handles.browseClassifierText , 'String', 'no Input File Selected!');
         set(handles.usePreviousFileForTrainingAndValidationCheckbox, 'Value', 0.0);
@@ -723,6 +727,8 @@ function loadClassifierCheckbox_Callback(hObject, ~, handles)
     if handles.loadClassifier == 1
         set(handles.usePreviousFileForTrainingAndValidationCheckbox, 'Value', 0.0);
         set(handles.selectDifferentdataSetClassification, 'Value', 0.0);
+        handles.useSameFileForTrainingAndValidation = 0;
+        handles.useDifferentDatasetForClassification = 0;
         set(handles.selectTrainAndValidationPercentagesPanel, 'Visible', 'off');
         set(handles.classifierButtonGroup, 'Visible', 'off');
         set(handles.selectFileForValidationPanel, 'Visible', 'on');
@@ -969,7 +975,7 @@ function runButon_Callback(hObject, ~, handles)
         [labels, sprt_test] = classify(trained_model, 'preprocess', higgs_data);
     elseif handles.useSameFileForTrainingAndValidation == 1
         % load dataset and pre-process the data        
-        fprintf('Loading dataset...\n');
+        fprintf('[1]Loading dataset...\n');
         [~, higgs_data] = load_dataset(handles.inputFilePath);
         fprintf('Preprocessing dataset...\n');
         [selected_features, feature_extraction_module, sprt_data_balanced ] = preprocess(higgs_data, lower(handles.fillMissingValuesMethod), lower(handles.featureSelectionMethod), lower(handles.featureReductionMethod), handles.targetNumberFeaturesFeatureSelection, handles.targetNumberFeaturesFeatureReduction, handles.balanceTrainingData, handles.fillMissingValuesKNNParameter);
