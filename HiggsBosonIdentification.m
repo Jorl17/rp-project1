@@ -969,8 +969,7 @@ function runButon_Callback(hObject, ~, handles)
         fprintf('Loading trained model...\n');
         trained_model = load_trained_model(handles.classifierFilePath);
         fprintf('Loading dataset...\n');
-        [~, higgs_data] = load_dataset(handles.trainFilePath);
-        
+        [~, higgs_data] = load_dataset(handles.trainFilePath);        
         fprintf('Classifying...\n');
         [labels, sprt_test] = classify(trained_model, 'preprocess', higgs_data);
     elseif handles.useSameFileForTrainingAndValidation == 1
@@ -979,9 +978,11 @@ function runButon_Callback(hObject, ~, handles)
         fprintf('[1]Loading dataset...\n');
         [~, higgs_data] = load_dataset(handles.inputFilePath);
         fprintf('Preprocessing dataset...\n');
-        [selected_features, feature_extraction_module, sprt_data_balanced ] = preprocess(higgs_data, lower(handles.fillMissingValuesMethod), lower(handles.featureSelectionMethod), lower(handles.featureReductionMethod), handles.targetNumberFeaturesFeatureSelection, handles.targetNumberFeaturesFeatureReduction, handles.balanceTrainingData, handles.fillMissingValuesKNNParameter);
+        [selected_features, feature_extraction_module, sprt_data ] = preprocess(higgs_data, lower(handles.fillMissingValuesMethod), handles.featureSelection, lower(handles.featureSelectionMethod), handles.performFeatureReduction, lower(handles.featureReductionMethod), handles.targetNumberFeaturesFeatureSelection, handles.targetNumberFeaturesFeatureReduction, handles.fillMissingValuesKNNParameter);
         fprintf('Splitting dataset...\n');
-        [sprt_train, sprt_test, ~] = split_training_test_validate(sprt_data_balanced, handles.percentageTraining/100.0, handles.percentageTest/100.0, 0);
+        [sprt_train, sprt_test, ~] = split_training_test_validate(sprt_data, handles.percentageTraining/100.0, handles.percentageTest/100.0, 0);        
+        fprintf('Balancing training dataset...\n');
+        sprt_train = balance_dataset(sprt_train, handles.balanceTrainingData);
         fprintf('Training classifier...\n');
         model = train(sprt_train, handles.classifier, handles.classifierParameter);
         fprintf('Building the training model...\n');
@@ -993,10 +994,12 @@ function runButon_Callback(hObject, ~, handles)
         fprintf('Loading dataset...\n');
         [~, higgs_data] = load_dataset(handles.inputFilePath);
         fprintf('Preprocessing dataset...\n');
-        [selected_features, feature_extraction_module, sprt_data_balanced ] = preprocess(higgs_data, lower(handles.fillMissingValuesMethod), lower(handles.featureSelectionMethod), lower(handles.featureReductionMethod), handles.targetNumberFeaturesFeatureSelection, handles.targetNumberFeaturesFeatureReduction, handles.balanceTrainingData, handles.fillMissingValuesKNNParameter);
+        [selected_features, feature_extraction_module, sprt_data ] = preprocess(higgs_data, lower(handles.fillMissingValuesMethod), handles.featureSelection, lower(handles.featureSelectionMethod), handles.performFeatureReduction, lower(handles.featureReductionMethod), handles.targetNumberFeaturesFeatureSelection, handles.targetNumberFeaturesFeatureReduction, handles.fillMissingValuesKNNParameter);
         %printf('Splitting dataset...\n');
         %[sprt_train, ~, ~] = split_training_test_validate(sprt_data_balanced, handles.percentageTraining/100.0, handles.percentageTest/100.0, 0);
-        sprt_train = sprt_data_balanced;
+        sprt_train = sprt_data;
+        fprintf('Balancing training dataset...\n');
+        sprt_train = balance_dataset(sprt_train, handles.balanceTrainingData);
         fprintf('Training classifier...\n');
         model = train(sprt_train, handles.classifier, handles.classifierParameter);
         fprintf('Building the training model...\n');

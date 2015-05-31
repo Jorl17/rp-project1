@@ -34,6 +34,11 @@ function [ data, model ] = feature_extraction(data, method, target_number_of_fea
         data = kernelproj( data, m );  
         model.type='kernelproj';
         model.m = m;
+    elseif strcmp(method, 'none')
+        model.m = -1;
+        model.type='none';
+        fprintf('....No feature extraction performed [2]\n');
+        return;
     end
     data.num_data = size(data.X, 2);
     data.name = 'Higgs Data';
