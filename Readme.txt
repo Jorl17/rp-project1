@@ -1,0 +1,6 @@
+To execute the application simply navigate to the source code folder and execute the command "HiggsBosonIdentification". This should open the MATLAB Graphical User Interface Application developed in the Pre-Processing tab.
+
+In this tab the user can select a series of pre-processing parameters, to be used for both the training and test dataset.
+Moving to the second tab (Simply by clicking on the "Train & Classification" button) the user can specify a wide range of paramters related to the training and the classification of the elements in the dataset: The user can select a previously saved and trained classifier, use the same dataset for training and testing, specifying the training and testing percentages of the data to be considered, and select a new dataset for testing.
+
+To run the classifier the user must simply press the "Run!" button and wait until the execution finished. At this point a button "Save Classifier" shall become visible and the user must be able to move to the "Results" tab, where the classification results are shown.
