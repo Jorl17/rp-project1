@@ -106,10 +106,10 @@ handles.fillMissingValuesKNNParameter = 5;
 handles.performFeatureReduction = 0;
 handles.targetNumberFeaturesFeatureReduction = 5;
 handles.targetNumberFeaturesFeatureSelection = 2;
-handles.featureSelection = 0;
+handles.featureSelection = 1;
 set(handles.featureSelectionListBox, 'Visible', 'on');
 handles.featureSelectionMethod = 'fskruskalwallis';
-handles.featureReduction = 0;
+handles.featureReduction = 1;
 set(handles.featureReductionListBox, 'Visible', 'on');
 handles.featureReductionMethod = 'lda';
 handles.classifier = 'knn';
@@ -118,10 +118,10 @@ handles.classifierParameter = 40;
 
 set(handles.selectTrainAndValidationPercentagesPanel, 'Visible', 'on');
 
-set(handles.featureReductionTargetNumberFeaturesText, 'Visible', 'off');
-set(handles.featureReductionTargetNumberFeaturesEdit, 'Visible', 'off');
-set(handles.featureSelectionTargetNumberFeaturesText, 'Visible', 'off');
-set(handles.featureSelectionTargetNumberFeaturesEdit, 'Visible', 'off');
+set(handles.featureReductionTargetNumberFeaturesText, 'Visible', 'on');
+set(handles.featureReductionTargetNumberFeaturesEdit, 'Visible', 'on');
+set(handles.featureSelectionTargetNumberFeaturesText, 'Visible', 'on');
+set(handles.featureSelectionTargetNumberFeaturesEdit, 'Visible', 'on');
 
 % Update handles structure
 guidata(hObject, handles);
@@ -964,6 +964,8 @@ function runButon_Callback(hObject, ~, handles)
 
     addpath('libsvm-3.20/matlab');
     addpath('mi');
+    
+    handles.featureSelection
 
     if handles.loadClassifier == 1
         fprintf('Loading trained model...\n');
